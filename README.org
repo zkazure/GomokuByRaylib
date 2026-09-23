@@ -9,6 +9,14 @@ mkdir -p build
 bear --output build/compile_commands.json -- make
 #+end_src
 
+* Rule
+
+- board
+  + 15x15
+  + stones are placed on the intersections.
+- black first
+- five stones in a continuous horizontal, vertical, or diagonal line wins. 
+
 * Design
 
 *Objects*:
