@@ -15,7 +15,7 @@ bear --output build/compile_commands.json -- make
   + 15x15
   + stones are placed on the intersections.
 - black first
-- five stones in a continuous horizontal, vertical, or diagonal line wins. 
+- five stones in a continuous horizontal, vertical, or diagonal line wins.
 
 * Design
 
@@ -39,7 +39,10 @@ bear --output build/compile_commands.json -- make
   + [X] compile with multiple files
   + [X] add raylib 6.0 dependency
   + [X] compile with raylib and specify version of raylib
-- [ ] draw a board
+- [-] draw a board
+  + [X] related class
+  + [ ] ratio of size to screen
+  + [ ] draw lines inside and outside board
 - [ ] draw pieces
 - [ ] track mouse event
 - [ ] click to put pieces
