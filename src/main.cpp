@@ -1,10 +1,22 @@
 #include <iostream>
-#include "other.h"
+#include "raylib.h"
 
 using namespace std;
 
 int main() {
-    cout << "Hello, Gomoku\n";
+    InitWindow(800, 600, "Gomoku By Raylib");
 
-    echo();
+    SetTargetFPS(60);
+
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        {
+            ClearBackground(WHITE);
+        }
+        EndDrawing();
+    }
+
+    CloseWindow();
+
+    cout << "Hello, Gomoku\n";
 }
