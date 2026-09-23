@@ -19,20 +19,56 @@ bear --output build/compile_commands.json -- make
 
 * Design
 
+** GlobalGame
+
+泛指这个游戏相关的状态。
+
+- screenLayout (default Vector2(800, 600))
+- GameState
+  + initial
+  + playing
+  + gameover
+
+** Player
+
+玩家，用来区分黑白棋手，同时在网络对战中也可以区分不同的棋手。
+
+- id
+- name
+- color
+
+** LocalGame
+
+特指棋盘的设置、落子状态以及操作历史。
+
+- boardSize (default 15): standard board is 15 x 15.
+  which determines how many rows and columns.
+- [ ] pieces
+- [ ] moves
+
+
+** Object
+
 Everything which is visible in game is an ~object~.
 
-*Objects*:
-1. game itself.
-   - game_state
-2. player
-   - id: unique id for each player.
-   - type: human or AI.
-   - side: black or white.
-3. board
-   - row and column
-   - pieces
-4. piece
+- position: the middle of object
 
+*** Board
+
+- width
+- layout (Vector2): point from left-top to right-bottom.
+
+
+*** Piece
+
+泛指棋盘上的所有物体，后续可以拓展。
+
+- radius
+- color
+
+**** 可能的派生
+
+- Stone：棋子
 
 * Roadmap [20%]
 
