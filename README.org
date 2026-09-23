@@ -80,6 +80,7 @@ MVP: 双人交替下五子棋。
   + [X] compile with multiple files
   + [X] add raylib 6.0 dependency
   + [X] compile with raylib and specify version of raylib
+  + [X] add include dir
 - [-] draw a board
   + [X] related class
   + [X] draw at the middle of position
