@@ -8,3 +8,6 @@ build/main.o:
 
 build/other.o:
 	g++ -c src/other.cpp -o build/other.o
+
+clean:
+	rm -rf build/

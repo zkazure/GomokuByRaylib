@@ -2,6 +2,12 @@
 
 write Gomoku with Raylib.
 
+* Get Started
+
+#+begin_src sh
+mkdir -p build
+bear --output build/compile_commands.json -- make
+#+end_src
 
 * Design
 
