@@ -1,3 +1,28 @@
 #+TITLE: Gomoku By Raylib
 
 write Gomoku with Raylib.
+
+
+* Design
+
+*Objects*:
+1. game itself.
+   - game_state
+2. player
+   - id: unique id for each player.
+   - type: human or AI.
+   - side: black or white.
+3. board
+   - row and column
+   - pieces
+4. piece
+
+
+* Roadmap [0%]
+
+- [ ] create Makefile
+- [ ] init window with raylib
+- [ ] draw a board
+- [ ] draw pieces
+- [ ] track mouse event
+- [ ] click to put pieces
