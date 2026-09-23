@@ -23,6 +23,7 @@ write Gomoku with Raylib.
 - [-] create Makefile
   + [X] compile a single file
   + [X] compile with multiple files
+  + [X] add raylib 6.0 dependency
   + [ ] compile with raylib and specify version of raylib
 - [ ] draw a board
 - [ ] draw pieces
