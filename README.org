@@ -19,6 +19,8 @@ bear --output build/compile_commands.json -- make
 
 * Design
 
+Everything which is visible in game is an ~object~.
+
 *Objects*:
 1. game itself.
    - game_state
@@ -34,6 +36,9 @@ bear --output build/compile_commands.json -- make
 
 * Roadmap [20%]
 
+MVP: 双人交替下五子棋。
+架构设计要尽可能为 AI、联网功能、画面优化腾出空间。
+
 - [X] create Makefile
   + [X] compile a single file
   + [X] compile with multiple files
@@ -41,6 +46,7 @@ bear --output build/compile_commands.json -- make
   + [X] compile with raylib and specify version of raylib
 - [-] draw a board
   + [X] related class
+  + [X] draw at the middle of position
   + [ ] ratio of size to screen
   + [ ] draw lines inside and outside board
 - [ ] draw pieces

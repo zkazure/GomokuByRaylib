@@ -19,16 +19,19 @@ private:
 
 public:
     Board() {}
-    Board(Vector2 p, int s) : Object(p), size(s) {}
+    Board(Vector2 p) : Object(p) {}
     void draw() override {
-        DrawRectangle(position.x, position.y, size, size, RED);
+        int realSize = size * 10;
+        DrawRectangle(position.x - (float)realSize/2, position.y - (float)realSize/2,
+                      realSize, realSize, RED);
     }
 };
 
 int main() {
-    InitWindow(800, 600, "Gomoku By Raylib");
+    const int screenWidth = 800, screenHeight = 600;
+    InitWindow(screenWidth, screenHeight, "Gomoku By Raylib");
 
-    Board board;
+    Board board({(float)screenWidth/2, (float)screenHeight/2});
 
     SetTargetFPS(60);
 
