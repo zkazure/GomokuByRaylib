@@ -21,7 +21,8 @@ write Gomoku with Raylib.
 * Roadmap [0%]
 
 - [ ] create Makefile
-- [ ] init window with raylib
+  + [ ] compile a single file
+  + [ ] compile with raylib
 - [ ] draw a board
 - [ ] draw pieces
 - [ ] track mouse event
