@@ -1,7 +1,4 @@
-#include <iostream>
 #include "raylib.h"
-
-using namespace std;
 
 class Object {
 protected:
@@ -45,6 +42,4 @@ int main() {
     }
 
     CloseWindow();
-
-    cout << "Hello, Gomoku\n";
 }

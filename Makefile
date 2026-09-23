@@ -1,13 +1,18 @@
+SRC_DIR := src
+INC_DIR := include
+BUILD_DIR := build
+
+SRCS := $(wildcard $(SRC_DIR)/*.cpp)
+OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 RAYLIB := external/raylib/src/libraylib.a
 
-build/gomoku: build/main.o build/other.o
-	g++ build/main.o build/other.o $(RAYLIB) -lX11 -o build/gomoku
+$(BUILD_DIR)/gomoku: $(OBJS)
+	g++ $(OBJS) $(RAYLIB) -lX11 -o $@
 
-build/main.o:
-	g++ -Iexternal/raylib/src -c src/main.cpp -o build/main.o
-
-build/other.o:
-	g++ -c src/other.cpp -o build/other.o
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	g++ -c $< \
+		-Iexternal/raylib/src \
+		-o $@
 
 clean:
 	rm -rf build/
