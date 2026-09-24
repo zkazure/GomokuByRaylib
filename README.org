@@ -55,8 +55,10 @@ Everything which is visible in game is an ~object~.
 
 *** Board
 
-- width
-- layout (Vector2): point from left-top to right-bottom.
+- globalGame: 全局游戏的设置
+- localGame: 本局棋局的设置
+- ratio (default 3/4): 相对于获取的 windowLayout，这个 board 比例。
+- width: 根据所在的 window 大小决定实际棋盘显示的宽度。
 
 
 *** Piece
