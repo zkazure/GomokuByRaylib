@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "raylib.h"
+#include "state.hpp"
 
 class Object {
 protected:
@@ -40,11 +41,12 @@ public:
 };
 
 int main() {
-    Vector2 screenLayout = {800, 600};
+    GlobalGame globalGame({800, 600}, GameState::INITIAL);
 
-    InitWindow(screenLayout.x, screenLayout.y, "Gomoku By Raylib");
+    InitWindow(globalGame.screenLayout.x, globalGame.screenLayout.y, "Gomoku By Raylib");
 
-    Board board({screenLayout.x/2, screenLayout.y/2}, screenLayout);
+    Board board({globalGame.screenLayout.x/2, globalGame.screenLayout.y/2},
+                globalGame.screenLayout);
 
     SetTargetFPS(60);
 
