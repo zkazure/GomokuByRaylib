@@ -25,3 +25,15 @@ public:
     Board(Vector2 p, Vector2 outterLayout);
     void draw() override;
 };
+
+enum class PieceType {PIECE_BLACK, PIECE_WHITE};
+
+class Piece : public Object {
+private:
+    PieceType type;
+    float radius;
+
+public:
+    Piece(Vector2 p, PieceType t, float r);
+    void draw() override;
+};

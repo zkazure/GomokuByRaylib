@@ -1,4 +1,5 @@
 #include "object.hpp"
+#include "raylib.h"
 
 Object::Object() : position({0, 0}) {}
 Object::Object(Vector2 p) : position(p) {}
@@ -20,5 +21,15 @@ void Board::draw() {
         DrawLine(origin.x, origin.y + i*space_width,
                  origin.x + width, origin.y + i*space_width,
                  BLACK);
+    }
+}
+
+
+Piece::Piece(Vector2 p, PieceType t, float r) : Object(p), type(t), radius(r) {}
+void Piece::draw() {
+    if (type == PieceType::PIECE_BLACK) {
+        DrawCircleV(position, radius, BLACK);
+    } else {
+        DrawCircleV(position, radius, WHITE);
     }
 }
