@@ -7,9 +7,11 @@ class GlobalGame {
 public:
     Vector2 screenLayout = {800, 600};
     GameState state = GameState::INITIAL;
+    Color boardBackground = GREEN;
 
 public:
-    GlobalGame(Vector2 s, GameState st);
+    GlobalGame(Vector2 sl, GameState s);
+    GlobalGame(Vector2 sl, GameState s, Color bbg);
 };
 
 

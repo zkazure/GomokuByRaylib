@@ -21,12 +21,11 @@ int main() {
         {
             ClearBackground(WHITE);
 
-            DrawCircleV(GetMousePosition(), 10, RED);
-
             board.draw();
             blackPiece.draw();
             whitePiece.draw();
 
+            DrawCircleV(GetMousePosition(), 10, RED);
         }
         EndDrawing();
     }

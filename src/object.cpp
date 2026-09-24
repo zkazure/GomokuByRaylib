@@ -14,7 +14,9 @@ void Board::draw() {
     int boardSize = localGame->boardSize;
     float space_width = width / boardSize;
     Vector2 leftTop = Vector2Add(position, {-width/2, -width/2});
+    Color background = globalGame->boardBackground;
 
+    DrawRectangleV(leftTop, {width, width}, background);
     DrawRectangleLines(leftTop.x, leftTop.y, width, width, BLACK);
 
     for (int i = 1; i < boardSize; ++i) {

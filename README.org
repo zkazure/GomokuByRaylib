@@ -28,6 +28,7 @@ bear --output build/compile_commands.json -- make
   + initial
   + playing
   + gameover
+- boardBackground: 棋盘的背景颜色
 
 ** Player
 
@@ -88,6 +89,7 @@ MVP: 双人交替下五子棋。
   + [X] draw at the middle of position
   + [X] ratio of size to screen
   + [X] draw lines inside and outside board
+  + [X] change backgroud color
 - [X] draw pieces
 - [X] track mouse event
 - [ ] click to put pieces
