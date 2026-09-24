@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include "raylib.h"
+#include "state.hpp"
 
 class Object {
 protected:
@@ -16,13 +17,13 @@ public:
 
 class Board : public Object {
 private:
+    const GlobalGame * const globalGame;
+    const LocalGame * localGame;
     const float ratio = (float)3/4;
-    Vector2 layout;
-    float width = std::min(layout.x, layout.y);
-    int size = 15;
+    float width = ratio * std::min(globalGame->screenLayout.x, globalGame->screenLayout.y);
 
 public:
-    Board(Vector2 p, Vector2 outterLayout);
+    Board(const GlobalGame * const globalGame, const LocalGame * localGame, Vector2 p);
     void draw() override;
 };
 

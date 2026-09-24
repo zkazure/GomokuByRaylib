@@ -7,8 +7,9 @@ int main() {
 
     InitWindow(globalGame.screenLayout.x, globalGame.screenLayout.y, "Gomoku By Raylib");
 
-    Board board({globalGame.screenLayout.x/2, globalGame.screenLayout.y/2},
-                globalGame.screenLayout);
+    LocalGame localGame(15);
+    Board board(&globalGame, &localGame,
+                {globalGame.screenLayout.x/2, globalGame.screenLayout.y/2});
     Piece blackPiece({400, 300}, PieceType::PIECE_BLACK, 10);
     Piece whitePiece({300, 300}, PieceType::PIECE_WHITE, 10);
 
