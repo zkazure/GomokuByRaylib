@@ -70,7 +70,7 @@ Everything which is visible in game is an ~object~.
 
 - Stone：棋子
 
-* Roadmap [60%]
+* Roadmap [80%]
 
 MVP: 双人交替下五子棋。
 架构设计要尽可能为 AI、联网功能、画面优化腾出空间。
@@ -87,5 +87,5 @@ MVP: 双人交替下五子棋。
   + [X] ratio of size to screen
   + [X] draw lines inside and outside board
 - [X] draw pieces
-- [ ] track mouse event
+- [X] track mouse event
 - [ ] click to put pieces

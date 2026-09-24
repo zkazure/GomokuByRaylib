@@ -19,9 +19,13 @@ int main() {
         BeginDrawing();
         {
             ClearBackground(WHITE);
+
+            DrawCircleV(GetMousePosition(), 10, RED);
+
             board.draw();
             blackPiece.draw();
             whitePiece.draw();
+
         }
         EndDrawing();
     }
