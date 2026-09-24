@@ -60,14 +60,17 @@ Everything which is visible in game is an ~object~.
 - localGame: 本局棋局的设置
 - ratio (default 3/4): 相对于获取的 windowLayout，这个 board 比例。
 - width: 根据所在的 window 大小决定实际棋盘显示的宽度。
+- cellWidth: 根据 width, size 计算得到每一格的宽度。
 
 
 *** Piece
 
 泛指棋盘上的所有物体，后续可以拓展。
 
+- board: 棋盘，可能需要棋盘的一些状态
+- type: nil, black, white
+- ratio: 棋子半径相对于棋盘单格的比例
 - radius
-- color
 
 **** 可能的派生
 

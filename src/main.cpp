@@ -7,11 +7,12 @@ int main() {
 
     InitWindow(globalGame.screenLayout.x, globalGame.screenLayout.y, "Gomoku By Raylib");
 
-    LocalGame localGame(15);
+    LocalGame localGame;
     Board board(&globalGame, &localGame,
                 {globalGame.screenLayout.x/2, globalGame.screenLayout.y/2});
-    Piece blackPiece({400, 300}, PieceType::PIECE_BLACK, 10);
-    Piece whitePiece({300, 300}, PieceType::PIECE_WHITE, 10);
+
+    Piece blackPiece(&board, {400, 300}, PieceType::PIECE_BLACK);
+    Piece whitePiece(&board, {300, 300}, PieceType::PIECE_WHITE);
 
     SetTargetFPS(60);
 
@@ -25,7 +26,7 @@ int main() {
             blackPiece.draw();
             whitePiece.draw();
 
-            DrawCircleV(GetMousePosition(), 10, RED);
+            DrawCircleV(GetMousePosition(), blackPiece.getRadius(), RED);
         }
         EndDrawing();
     }

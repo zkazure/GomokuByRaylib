@@ -18,23 +18,29 @@ public:
 class Board : public Object {
 private:
     const GlobalGame * const globalGame;
-    const LocalGame * localGame;
+    const LocalGame *localGame;
     const float ratio = (float)3/4;
-    float width = ratio * std::min(globalGame->screenLayout.x, globalGame->screenLayout.y);
+    const float width = ratio * std::min(globalGame->screenLayout.x, globalGame->screenLayout.y);
+    const float cellWidth = width / localGame->boardSize;
 
 public:
     Board(const GlobalGame * const globalGame, const LocalGame * localGame, Vector2 p);
     void draw() override;
+    float getWidth() const ;
+    float getCellWidth() const;
 };
 
-enum class PieceType {PIECE_BLACK, PIECE_WHITE};
+enum class PieceType {PIECE_NIL, PIECE_BLACK, PIECE_WHITE};
 
 class Piece : public Object {
 private:
+    const Board * const board;
     PieceType type;
-    float radius;
+    const float ratio = (float)3/7;
+    const float radius = board->getCellWidth() * ratio;
 
 public:
-    Piece(Vector2 p, PieceType t, float r);
+    Piece(const Board * const b, Vector2 p, PieceType t);
     void draw() override;
+    float getRadius() const;
 };

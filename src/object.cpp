@@ -12,7 +12,6 @@ Board::Board(const GlobalGame * const g, const LocalGame * l, Vector2 p)
 
 void Board::draw() {
     int boardSize = localGame->boardSize;
-    float space_width = width / boardSize;
     Vector2 leftTop = Vector2Add(position, {-width/2, -width/2});
     Color background = globalGame->boardBackground;
 
@@ -20,18 +19,21 @@ void Board::draw() {
     DrawRectangleLines(leftTop.x, leftTop.y, width, width, BLACK);
 
     for (int i = 1; i < boardSize; ++i) {
-        DrawLineV(Vector2Add(leftTop, {0, i*space_width}),
-                  Vector2Add(leftTop, {width, i*space_width}),
+        DrawLineV(Vector2Add(leftTop, {0, i*cellWidth}),
+                  Vector2Add(leftTop, {width, i*cellWidth}),
                   BLACK);
 
-        DrawLineV(Vector2Add(leftTop, {i*space_width, 0}),
-                  Vector2Add(leftTop, {i*space_width, width}),
+        DrawLineV(Vector2Add(leftTop, {i*cellWidth, 0}),
+                  Vector2Add(leftTop, {i*cellWidth, width}),
                   BLACK);
     }
 }
 
+float Board::getWidth() const { return width; }
+float Board::getCellWidth() const { return cellWidth; }
 
-Piece::Piece(Vector2 p, PieceType t, float r) : Object(p), type(t), radius(r) {}
+
+Piece::Piece(const Board *b, Vector2 p, PieceType t) : board(b), Object(p), type(t) {}
 void Piece::draw() {
     if (type == PieceType::PIECE_BLACK) {
         DrawCircleV(position, radius, BLACK);
@@ -39,3 +41,5 @@ void Piece::draw() {
         DrawCircleV(position, radius, WHITE);
     }
 }
+
+float Piece::getRadius() const { return radius; }
