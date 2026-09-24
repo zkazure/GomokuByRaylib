@@ -70,7 +70,7 @@ Everything which is visible in game is an ~object~.
 
 - Stone：棋子
 
-* Roadmap [20%]
+* Roadmap [40%]
 
 MVP: 双人交替下五子棋。
 架构设计要尽可能为 AI、联网功能、画面优化腾出空间。
@@ -81,11 +81,11 @@ MVP: 双人交替下五子棋。
   + [X] add raylib 6.0 dependency
   + [X] compile with raylib and specify version of raylib
   + [X] add include dir
-- [-] draw a board
+- [X] draw a board
   + [X] related class
   + [X] draw at the middle of position
-  + [ ] ratio of size to screen
-  + [ ] draw lines inside and outside board
+  + [X] ratio of size to screen
+  + [X] draw lines inside and outside board
 - [ ] draw pieces
 - [ ] track mouse event
 - [ ] click to put pieces

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "raylib.h"
 
 class Object {
@@ -12,23 +13,38 @@ public:
 
 class Board : public Object {
 private:
+    const float ratio = (float)3/4;
+    Vector2 layout;
+    float width = std::min(layout.x, layout.y);
     int size = 15;
 
 public:
-    Board() {}
-    Board(Vector2 p) : Object(p) {}
+    Board(Vector2 p, Vector2 outterLayout)
+        : Object(p), layout({outterLayout.x*ratio, outterLayout.y*ratio}) {}
     void draw() override {
-        int realSize = size * 10;
-        DrawRectangle(position.x - (float)realSize/2, position.y - (float)realSize/2,
-                      realSize, realSize, RED);
+        int realSize = size/10 * 600;
+        const Vector2 origin = {position.x-width/2, position.y-width/2};
+        DrawRectangleLines(origin.x, origin.y,
+                           width, width, BLACK);
+
+        float space_width = width / 15;
+        for (int i = 1; i < 15; ++i) {
+            DrawLine(origin.x + i*space_width, origin.y,
+                     origin.x + i*space_width, origin.y + width,
+                     BLACK);
+            DrawLine(origin.x, origin.y + i*space_width,
+                     origin.x + width, origin.y + i*space_width,
+                     BLACK);
+        }
     }
 };
 
 int main() {
-    const int screenWidth = 800, screenHeight = 600;
-    InitWindow(screenWidth, screenHeight, "Gomoku By Raylib");
+    Vector2 screenLayout = {800, 600};
 
-    Board board({(float)screenWidth/2, (float)screenHeight/2});
+    InitWindow(screenLayout.x, screenLayout.y, "Gomoku By Raylib");
+
+    Board board({screenLayout.x/2, screenLayout.y/2}, screenLayout);
 
     SetTargetFPS(60);
 
