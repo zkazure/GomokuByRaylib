@@ -11,3 +11,13 @@ public:
 public:
     GlobalGame(Vector2 s, GameState st);
 };
+
+
+class LocalGame {
+public:
+    int boardSize = 15;
+
+public:
+    LocalGame();
+    LocalGame(int bs);
+};
