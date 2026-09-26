@@ -1,7 +1,9 @@
 #pragma once
 
+#include <vector>
 #include <algorithm>
 #include "raylib.h"
+#include "raymath.h"
 #include "state.hpp"
 
 class Object {
@@ -21,7 +23,9 @@ private:
     const LocalGame *localGame;
     const float ratio = (float)3/4;
     const float width = ratio * std::min(globalGame->screenLayout.x, globalGame->screenLayout.y);
-    const float cellWidth = width / localGame->boardSize;
+    const float cellWidth = width / (localGame->boardSize + 1);
+    const Vector2 leftTop = Vector2Add(position, {-width/2, -width/2});
+    std::vector<std::vector<Vector2>> intersections;
 
 public:
     Board(const GlobalGame * const globalGame, const LocalGame * localGame, Vector2 p);

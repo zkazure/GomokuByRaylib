@@ -61,6 +61,8 @@ Everything which is visible in game is an ~object~.
 - ratio (default 3/4): 相对于获取的 windowLayout，这个 board 比例。
 - width: 根据所在的 window 大小决定实际棋盘显示的宽度。
 - cellWidth: 根据 width, size 计算得到每一格的宽度。
+- leftTop: 棋盘左上方点的坐标
+- intersections: 棋盘上每一个交点的坐标。外围一圈是距离无限大的。
 
 
 *** Piece
