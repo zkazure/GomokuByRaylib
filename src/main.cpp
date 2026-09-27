@@ -11,9 +11,6 @@ int main() {
     Board board(&globalGame, &localGame,
                 {globalGame.screenLayout.x/2, globalGame.screenLayout.y/2});
 
-    Piece blackPiece(&board, {400, 300}, PieceType::PIECE_BLACK);
-    Piece whitePiece(&board, {300, 300}, PieceType::PIECE_WHITE);
-
     SetTargetFPS(60);
 
 
@@ -23,10 +20,6 @@ int main() {
             ClearBackground(WHITE);
 
             board.draw();
-            blackPiece.draw();
-            whitePiece.draw();
-
-            DrawCircleV(GetMousePosition(), blackPiece.getRadius(), RED);
         }
         EndDrawing();
     }

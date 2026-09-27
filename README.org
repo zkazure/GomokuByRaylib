@@ -44,8 +44,8 @@ bear --output build/compile_commands.json -- make
 
 - boardSize (default 15): standard board is 15 x 15.
   which determines how many rows and columns.
-- [ ] pieces
-- [ ] moves
+- boardState：棋盘上棋子的分布 (row, col).
+- moveHistory
 
 
 ** Object
@@ -63,6 +63,8 @@ Everything which is visible in game is an ~object~.
 - cellWidth: 根据 width, size 计算得到每一格的宽度。
 - leftTop: 棋盘左上方点的坐标
 - intersections: 棋盘上每一个交点的坐标。外围一圈是距离无限大的。
+  [1-boardSize] 为实际的可落子区域
+- pieces: 实际棋子
 
 
 *** Piece

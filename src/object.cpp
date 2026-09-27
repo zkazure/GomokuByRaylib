@@ -17,6 +17,9 @@ Board::Board(const GlobalGame * const g, const LocalGame * l, Vector2 p)
     for (int i = 0; i <= boardSize+1; ++i) {
         intersections.push_back(std::vector<Vector2>());
         intersections[i].resize(boardSize+2);
+
+        pieces.push_back(std::vector<Piece *>());
+        pieces[i].resize(boardSize+2);
     }
 
     float inf = std::numeric_limits<float>::infinity();
@@ -42,6 +45,24 @@ Board::Board(const GlobalGame * const g, const LocalGame * l, Vector2 p)
                                       Vector2Multiply({(float)j, 0}, right)));
         }
     }
+
+    // TOOD: init from localGame
+    for (int i = 1; i <= boardSize; ++i) {
+        for (int j = 1; j <= boardSize; ++j) {
+            pieces[i][j] = new Piece(this, {leftTop.x + right.x * i, leftTop.y + down.y * j}, PieceType::PIECE_BLACK);
+        }
+    }
+}
+
+Board::~Board() {
+    int boardSize = localGame->boardSize;
+    for (int i = 1; i <= boardSize; ++i) {
+        for (int j = 1; j <= boardSize; ++j) {
+            if (pieces[i][j] != nullptr) {
+                delete pieces[i][j];
+            }
+        }
+    }
 }
 
 void Board::draw() {
@@ -58,6 +79,14 @@ void Board::draw() {
         DrawLineV(Vector2Add(intersections[i][1], {-cellWidth, 0}),
                   Vector2Add(intersections[i][boardSize], {cellWidth, 0}),
                   BLACK);
+    }
+
+    for (int i = 1; i <= boardSize; ++i) {
+        for (int j = 1; j <= boardSize; ++j) {
+            if (pieces[i][j] != nullptr) {
+                pieces[i][j]->draw();
+            }
+        }
     }
 }
 
