@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "type.hpp"
 #include "raylib.h"
 
@@ -17,6 +18,7 @@ public:
 class LocalGame {
 public:
     int boardSize = 15;
+    std::vector<std::vector<PieceType>> boardState;
 
 public:
     LocalGame();
