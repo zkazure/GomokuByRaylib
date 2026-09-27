@@ -19,15 +19,23 @@ bear --output build/compile_commands.json -- make
 
 * Design
 
+** Type
+- GameState
+  + initial
+  + playing
+  + gameover
+- PieceType:
+  + empty
+  + black
+  + white
+- Coordinate = pair<int, int>
+
 ** GlobalGame
 
 泛指这个游戏相关的状态。
 
 - screenLayout (default Vector2(800, 600))
 - GameState
-  + initial
-  + playing
-  + gameover
 - boardBackground: 棋盘的背景颜色
 
 ** Player

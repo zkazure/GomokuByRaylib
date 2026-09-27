@@ -93,8 +93,8 @@ void Board::draw() {
 float Board::getWidth() const { return width; }
 float Board::getCellWidth() const { return cellWidth; }
 
-std::pair<int, int> Board::pos2coor(Vector2 position) const {
-    std::pair<int, int> coordinate = {16, 16};
+Coordinate Board::pos2coor(Vector2 position) const {
+    Coordinate coordinate = {16, 16};
 
     int boardSize = localGame->boardSize;
     for (int i = 0; i <= boardSize+1; ++i) {
@@ -111,7 +111,7 @@ std::pair<int, int> Board::pos2coor(Vector2 position) const {
     }
 
     {    float distance = cellWidth;
-        std::pair<int, int> tempCoordination = coordinate;
+        Coordinate tempCoordination = coordinate;
         float tempDistance
             = Vector2Distance(position, intersections[tempCoordination.first][tempCoordination.second]);
         if (tempDistance < distance) {

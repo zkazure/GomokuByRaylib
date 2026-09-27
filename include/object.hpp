@@ -37,7 +37,7 @@ public:
     void draw() override;
     float getWidth() const ;
     float getCellWidth() const;
-    std::pair<int, int> pos2coor(Vector2 position) const;
+    Coordinate pos2coor(Vector2 position) const;
 };
 
 
