@@ -1,4 +1,5 @@
 #include "state.hpp"
+#include "object.hpp"
 
 GlobalGame::GlobalGame(Vector2 sl, GameState s)
     : screenLayout(sl), state(s) {}

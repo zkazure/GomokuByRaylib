@@ -1,7 +1,6 @@
 #pragma once
+#include "type.hpp"
 #include "raylib.h"
-
-enum class GameState { INITIAL, PLAYING, GAMEOVER };
 
 class GlobalGame {
 public:
