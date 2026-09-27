@@ -67,6 +67,9 @@ Everything which is visible in game is an ~object~.
 - pieces: 实际棋子
 
 
+- pos2coor: convert position on screen to coordinate on the board.
+
+
 *** Piece
 
 泛指棋盘上的所有物体，后续可以拓展。
@@ -100,3 +103,6 @@ MVP: 双人交替下五子棋。
 - [X] draw pieces
 - [X] track mouse event
 - [ ] click to put pieces
+  - [ ] check validation
+  - [ ] from position to coordination
+  - [ ] from coordination to position

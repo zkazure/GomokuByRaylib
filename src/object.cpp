@@ -93,6 +93,59 @@ void Board::draw() {
 float Board::getWidth() const { return width; }
 float Board::getCellWidth() const { return cellWidth; }
 
+std::pair<int, int> Board::pos2coor(Vector2 position) const {
+    std::pair<int, int> coordinate = {16, 16};
+
+    int boardSize = localGame->boardSize;
+    for (int i = 0; i <= boardSize+1; ++i) {
+        if (position.x < intersections[0][i].x) {
+            coordinate.second = i-1;
+            break;
+        }
+    }
+    for (int i = 0; i <= boardSize+1; ++i) {
+        if (position.y < intersections[i][0].y) {
+            coordinate.first = i-1;
+            break;
+        }
+    }
+
+    {    float distance = cellWidth;
+        std::pair<int, int> tempCoordination = coordinate;
+        float tempDistance
+            = Vector2Distance(position, intersections[tempCoordination.first][tempCoordination.second]);
+        if (tempDistance < distance) {
+            coordinate = tempCoordination;
+            distance = tempDistance;
+        }
+
+        tempCoordination.first += 1;
+        tempDistance
+            = Vector2Distance(position, intersections[tempCoordination.first][tempCoordination.second]);
+        if (tempDistance < distance) {
+            coordinate = tempCoordination;
+            distance = tempDistance;
+        }
+
+        tempCoordination.second += 1;
+        tempDistance
+            = Vector2Distance(position, intersections[tempCoordination.first][tempCoordination.second]);
+        if (tempDistance < distance) {
+            coordinate = tempCoordination;
+            distance = tempDistance;
+        }
+
+        tempCoordination.first -= 1;
+        tempDistance
+            = Vector2Distance(position, intersections[tempCoordination.first][tempCoordination.second]);
+        if (tempDistance < distance) {
+            coordinate = tempCoordination;
+            distance = tempDistance;
+        }
+    }
+
+    return coordinate;
+}
 
 Piece::Piece(const Board *b, Vector2 p, PieceType t) : board(b), Object(p), type(t) {}
 void Piece::draw() {

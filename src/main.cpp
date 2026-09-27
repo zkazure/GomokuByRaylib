@@ -1,3 +1,4 @@
+#include <iostream>
 #include "raylib.h"
 #include "state.hpp"
 #include "object.hpp"
@@ -22,6 +23,10 @@ int main() {
             board.draw();
         }
         EndDrawing();
+
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            board.pos2coor(GetMousePosition());
+        }
     }
 
     CloseWindow();

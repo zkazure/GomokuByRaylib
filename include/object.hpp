@@ -36,6 +36,7 @@ public:
     void draw() override;
     float getWidth() const ;
     float getCellWidth() const;
+    std::pair<int, int> pos2coor(Vector2 position) const;
 };
 
 enum class PieceType {PIECE_NIL, PIECE_BLACK, PIECE_WHITE};
