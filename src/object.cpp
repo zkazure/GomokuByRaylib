@@ -4,12 +4,13 @@
 #include "object.hpp"
 #include "raylib.h"
 #include "raymath.h"
+#include "type.hpp"
 
 Object::Object() : position({0, 0}) {}
 Object::Object(Vector2 p) : position(p) {}
 
 
-Board::Board(const GlobalGame * const g, const LocalGame * l, Vector2 p)
+Board::Board(const GlobalGame * const g, LocalGame * l, Vector2 p)
     : Object(p), globalGame(g), localGame(l)
 {
     int boardSize = localGame->boardSize;
@@ -46,12 +47,12 @@ Board::Board(const GlobalGame * const g, const LocalGame * l, Vector2 p)
         }
     }
 
-    // TOOD: init from localGame
-    for (int i = 1; i <= boardSize; ++i) {
-        for (int j = 1; j <= boardSize; ++j) {
-            pieces[i][j] = new Piece(this, {leftTop.x + right.x * i, leftTop.y + down.y * j}, PieceType::PIECE_BLACK);
-        }
-    }
+    // // TOOD: init from localGame
+    // for (int i = 1; i <= boardSize; ++i) {
+    //     for (int j = 1; j <= boardSize; ++j) {
+    //         pieces[i][j] = new Piece(this, {leftTop.x + right.x * i, leftTop.y + down.y * j}, PieceType::PIECE_BLACK);
+    //     }
+    // }
 }
 
 Board::~Board() {
@@ -145,6 +146,24 @@ Coordinate Board::pos2coor(Vector2 position) const {
     }
 
     return coordinate;
+}
+
+Vector2 Board::coor2pos(Coordinate coor) const {
+    return intersections[coor.first][coor.second];
+}
+
+bool Board::createPiece(Coordinate coor, PieceType type) {
+    if (!localGame->make1Move(coor, type)) {
+        return false;
+    }
+
+    pieces[coor.first][coor.second] = new Piece(this, coor2pos(coor), type);
+
+    return true;
+}
+
+bool Board::createPiece(Vector2 position, PieceType type) {
+    return createPiece(pos2coor(position), type);
 }
 
 Piece::Piece(const Board *b, Vector2 p, PieceType t) : board(b), Object(p), type(t) {}

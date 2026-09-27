@@ -23,4 +23,5 @@ public:
 public:
     LocalGame();
     LocalGame(int bs);
+    bool make1Move(Coordinate coor, PieceType type);
 };

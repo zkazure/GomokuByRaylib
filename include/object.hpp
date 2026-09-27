@@ -38,6 +38,9 @@ public:
     float getWidth() const ;
     float getCellWidth() const;
     Coordinate pos2coor(Vector2 position) const;
+    Vector2 coor2pos(Coordinate coor) const;
+    bool createPiece(Coordinate coor, PieceType type);
+    bool createPiece(Vector2 position, PieceType type);
 };
 
 

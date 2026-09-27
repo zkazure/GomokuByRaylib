@@ -56,6 +56,7 @@ bear --output build/compile_commands.json -- make
 - moveHistory
 
 
+- Make1Move: 改变 boardState、moveHistory.
 ** Object
 
 Everything which is visible in game is an ~object~.
@@ -76,6 +77,8 @@ Everything which is visible in game is an ~object~.
 
 
 - pos2coor: convert position on screen to coordinate on the board.
+- coor2pos
+- createPiece: 同时调用 localGame->make1Move
 
 
 *** Piece
@@ -91,7 +94,7 @@ Everything which is visible in game is an ~object~.
 
 - Stone：棋子
 
-* Roadmap [80%]
+* Roadmap [71%]
 
 MVP: 双人交替下五子棋。
 架构设计要尽可能为 AI、联网功能、画面优化腾出空间。
@@ -110,7 +113,9 @@ MVP: 双人交替下五子棋。
   + [X] change backgroud color
 - [X] draw pieces
 - [X] track mouse event
-- [ ] click to put pieces
-  - [ ] check validation
-  - [ ] from position to coordination
-  - [ ] from coordination to position
+- [X] click to put pieces
+  - [X] check validation
+  - [X] from position to coordination
+  - [X] from coordination to position
+- [ ] player play each turn
+- [ ] check rule

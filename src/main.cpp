@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "state.hpp"
 #include "object.hpp"
+#include "type.hpp"
 
 int main() {
     GlobalGame globalGame({800, 600}, GameState::INITIAL);
@@ -25,7 +26,7 @@ int main() {
         EndDrawing();
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            board.pos2coor(GetMousePosition());
+            std::cout << board.createPiece(GetMousePosition(), PieceType::PIECE_BLACK) << std::endl;
         }
     }
 

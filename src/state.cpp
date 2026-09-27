@@ -6,7 +6,6 @@ GlobalGame::GlobalGame(Vector2 sl, GameState s)
 GlobalGame::GlobalGame(Vector2 sl, GameState s, Color bbg)
     : screenLayout(sl), state(s), boardBackground(bbg) {}
 
-Move::Move(int r, int c, PieceType t) : row(r), col(c), type(t) {}
 
 LocalGame::LocalGame() : boardSize(15) {
     boardState.resize(boardSize+2);
@@ -27,6 +26,12 @@ LocalGame::LocalGame(int bs) : boardSize(bs) {
     }
 }
 
-bool LocalGame::Make1Move() {
-    return false;
+bool LocalGame::make1Move(Coordinate coor, PieceType type) {
+    if (boardState[coor.first][coor.second] != PieceType::PIECE_EMPTY) {
+        return false;
+    }
+
+    boardState[coor.first][coor.second] = type;
+
+    return true;
 }
