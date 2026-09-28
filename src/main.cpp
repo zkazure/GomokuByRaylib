@@ -30,15 +30,17 @@ int main() {
         }
         EndDrawing();
 
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-
-            if (board.createPiece(GetMousePosition(), currPlayer->getPlaying())) {
-                if (currPlayer == &blackPlayer) {
-                    currPlayer = &whitePlayer;
-                } else {
-                    currPlayer = &blackPlayer;
-                }
+        {
+            Move lastMove = localGame.getLastMove();
+            if (lastMove.type == PieceType::PIECE_BLACK) {
+                currPlayer = &whitePlayer;
+            } else if (lastMove.type == PieceType::PIECE_WHITE) {
+                currPlayer = &blackPlayer;
             }
+        }
+
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            board.createPiece(GetMousePosition(), currPlayer->getPlaying());
         }
 
         if (IsKeyPressed(KEY_Z)) {
