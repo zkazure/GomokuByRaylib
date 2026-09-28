@@ -40,6 +40,17 @@ int main() {
                 }
             }
         }
+
+        if (IsKeyPressed(KEY_Z)) {
+            PieceType type = board.regret();
+            if (type == PieceType::PIECE_EMPTY) {
+                std::cout << "No History!!!\n";
+            } else if (type == PieceType::PIECE_WHITE) {
+                currPlayer = &whitePlayer;
+            } else {
+                currPlayer = &blackPlayer;
+            }
+        }
     }
 
     CloseWindow();

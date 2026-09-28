@@ -41,6 +41,7 @@ public:
     Vector2 coor2pos(Coordinate coor) const;
     bool createPiece(Coordinate coor, PieceType type);
     bool createPiece(Vector2 position, PieceType type);
+    PieceType regret();
 };
 
 
@@ -55,4 +56,5 @@ public:
     Piece(const Board * const b, Vector2 p, PieceType t);
     void draw() override;
     float getRadius() const;
+    PieceType getType() const;
 };

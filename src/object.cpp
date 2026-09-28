@@ -166,6 +166,25 @@ bool Board::createPiece(Vector2 position, PieceType type) {
     return createPiece(pos2coor(position), type);
 }
 
+PieceType Board::regret() {
+    if (localGame->moveHistory.empty()) {
+        return PieceType::PIECE_EMPTY;
+    }
+
+    Move lastMove = localGame->moveHistory.top();
+    localGame->moveHistory.pop();
+
+    Piece*& lastPiece = pieces[lastMove.row][lastMove.col];
+    PieceType type = lastPiece->getType();
+
+    delete lastPiece;
+    lastPiece = nullptr;
+
+    localGame->boardState[lastMove.row][lastMove.col] = PieceType::PIECE_EMPTY;
+
+    return type;
+}
+
 Piece::Piece(const Board *b, Vector2 p, PieceType t) : board(b), Object(p), type(t) {}
 void Piece::draw() {
     if (type == PieceType::PIECE_BLACK) {
@@ -176,3 +195,5 @@ void Piece::draw() {
 }
 
 float Piece::getRadius() const { return radius; }
+
+PieceType Piece::getType() const { return type; }

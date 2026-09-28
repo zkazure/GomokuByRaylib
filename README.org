@@ -79,6 +79,7 @@ Everything which is visible in game is an ~object~.
 - pos2coor: convert position on screen to coordinate on the board.
 - coor2pos
 - createPiece: 同时调用 localGame->make1Move
+- regret：悔棋
 
 
 *** Piece
@@ -94,7 +95,7 @@ Everything which is visible in game is an ~object~.
 
 - Stone：棋子
 
-* Roadmap [85%]
+* Roadmap [87%]
 
 MVP: 双人交替下五子棋。
 架构设计要尽可能为 AI、联网功能、画面优化腾出空间。
@@ -118,4 +119,5 @@ MVP: 双人交替下五子棋。
   - [X] from position to coordination
   - [X] from coordination to position
 - [X] player play each turn
+- [X] regret move
 - [ ] check rule
