@@ -57,6 +57,7 @@ bear --output build/compile_commands.json -- make
 
 
 - Make1Move: 改变 boardState、moveHistory.
+- getLastMove: 拿到最近一步棋的相关参数。
 ** Object
 
 Everything which is visible in game is an ~object~.

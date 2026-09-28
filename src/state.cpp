@@ -39,3 +39,11 @@ bool LocalGame::make1Move(Coordinate coor, PieceType type) {
 
     return true;
 }
+
+Move LocalGame::getLastMove() const {
+    if (moveHistory.empty()) {
+        return Move(0, 0, PieceType::PIECE_EMPTY);
+    }
+
+    return moveHistory.top();
+}
