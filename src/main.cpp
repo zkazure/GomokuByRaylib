@@ -3,6 +3,7 @@
 #include "state.hpp"
 #include "object.hpp"
 #include "type.hpp"
+#include "player.hpp"
 
 int main() {
     GlobalGame globalGame({800, 600}, GameState::INITIAL);
@@ -12,6 +13,10 @@ int main() {
     LocalGame localGame;
     Board board(&globalGame, &localGame,
                 {globalGame.screenLayout.x/2, globalGame.screenLayout.y/2});
+
+    Player blackPlayer(PieceType::PIECE_BLACK);
+    Player whitePlayer(PieceType::PIECE_WHITE);
+    Player *currPlayer = &blackPlayer;
 
     SetTargetFPS(60);
 
@@ -26,7 +31,14 @@ int main() {
         EndDrawing();
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            std::cout << board.createPiece(GetMousePosition(), PieceType::PIECE_BLACK) << std::endl;
+
+            if (board.createPiece(GetMousePosition(), currPlayer->getPlaying())) {
+                if (currPlayer == &blackPlayer) {
+                    currPlayer = &whitePlayer;
+                } else {
+                    currPlayer = &blackPlayer;
+                }
+            }
         }
     }
 
