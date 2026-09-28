@@ -39,6 +39,12 @@ int main() {
             }
         }
 
+        if (localGame.checkOutcome() == PieceType::PIECE_BLACK) {
+            std::cout << "Black win!!!\n";
+        } else if (localGame.checkOutcome() == PieceType::PIECE_WHITE) {
+            std::cout << "White win!!!\n";
+        }
+
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             board.createPiece(GetMousePosition(), currPlayer->getPlaying());
         }

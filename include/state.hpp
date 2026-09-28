@@ -36,4 +36,5 @@ public:
     LocalGame(int bs);
     bool make1Move(Coordinate coor, PieceType type);
     Move getLastMove() const;
+    PieceType checkOutcome() const;
 };
