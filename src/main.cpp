@@ -39,10 +39,15 @@ int main() {
             }
         }
 
-        if (localGame.checkOutcome() == PieceType::PIECE_BLACK) {
-            std::cout << "Black win!!!\n";
-        } else if (localGame.checkOutcome() == PieceType::PIECE_WHITE) {
-            std::cout << "White win!!!\n";
+        {
+            PieceType type = localGame.checkOutcome();
+            if (type != PieceType::PIECE_EMPTY) {
+                if (type == PieceType::PIECE_BLACK) {
+                    std::cout << "Black win!!!\n";
+                } else if (type == PieceType::PIECE_WHITE) {
+                    std::cout << "White win!!!\n";
+                }
+            }
         }
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
