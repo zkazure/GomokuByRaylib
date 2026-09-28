@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <stack>
 #include "type.hpp"
 #include "raylib.h"
 
@@ -15,10 +16,20 @@ public:
 };
 
 
+struct Move {
+    int row;
+    int col;
+    PieceType type;
+
+    Move(int r, int c, PieceType t);
+};
+
+
 class LocalGame {
 public:
     int boardSize = 15;
     std::vector<std::vector<PieceType>> boardState;
+    std::stack<Move> moveHistory;
 
 public:
     LocalGame();
