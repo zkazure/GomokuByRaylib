@@ -97,6 +97,19 @@ Everything which is visible in game is an ~object~.
 
 - Stone：棋子
 
+*** Menu
+
+**** Button
+
+- info: 按键上的字体
+- fontSize
+- width：根据 info 长度调整
+- height：根据 fontSize 调整
+- leftTop：按键左上角屏幕坐标
+
+
+- isToggled: 检测当前按钮是否被按下
+
 * Roadmap [72%]
 
 MVP: 双人交替下五子棋。

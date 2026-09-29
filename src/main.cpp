@@ -1,4 +1,5 @@
 #include <iostream>
+#include "menu.hpp"
 #include "raylib.h"
 #include "state.hpp"
 #include "object.hpp"
@@ -18,6 +19,9 @@ int main() {
     Player whitePlayer(PieceType::PIECE_WHITE);
     Player *currPlayer = &blackPlayer;
 
+    Button testButton({400, 300}, "testButton", 16);
+
+
     SetTargetFPS(60);
 
 
@@ -27,6 +31,8 @@ int main() {
             ClearBackground(WHITE);
 
             board.draw();
+
+            testButton.draw();
         }
         EndDrawing();
 
@@ -52,6 +58,7 @@ int main() {
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             board.createPiece(GetMousePosition(), currPlayer->getPlaying());
+            testButton.isToggled(GetMousePosition());
         }
 
         if (IsKeyPressed(KEY_Z)) {
