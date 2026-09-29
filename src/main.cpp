@@ -37,6 +37,12 @@ int main() {
         EndDrawing();
 
         {
+            if (globalGame.state == GameState::GAMEOVER) {
+                continue;
+            }
+        }
+
+        {
             Move lastMove = localGame.getLastMove();
             if (lastMove.type == PieceType::PIECE_BLACK) {
                 currPlayer = &whitePlayer;
@@ -48,17 +54,15 @@ int main() {
         {
             PieceType type = localGame.checkOutcome();
             if (type != PieceType::PIECE_EMPTY) {
-                if (type == PieceType::PIECE_BLACK) {
-                    std::cout << "Black win!!!\n";
-                } else if (type == PieceType::PIECE_WHITE) {
-                    std::cout << "White win!!!\n";
-                }
+                globalGame.state = GameState::GAMEOVER;
             }
         }
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             board.createPiece(GetMousePosition(), currPlayer->getPlaying());
-            testButton.isToggled(GetMousePosition());
+            if (testButton.isToggled(GetMousePosition())) {
+                globalGame.state = GameState::GAMEOVER;
+            }
         }
 
         if (IsKeyPressed(KEY_Z)) {
