@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <stack>
+#include <utility>
 #include "type.hpp"
 #include "raylib.h"
 
@@ -9,6 +10,7 @@ public:
     Vector2 screenLayout = {800, 600};
     GameState state = GameState::INITIAL;
     Color boardBackground = GREEN;
+    std::pair<int, int> score = {0, 0};
 
 public:
     GlobalGame(Vector2 sl, GameState s);

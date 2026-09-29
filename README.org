@@ -37,6 +37,7 @@ bear --output build/compile_commands.json -- make
 - screenLayout (default Vector2(800, 600))
 - GameState
 - boardBackground: 棋盘的背景颜色
+- score：黑白分数
 
 ** Player
 

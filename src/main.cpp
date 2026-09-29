@@ -55,6 +55,11 @@ int main() {
             PieceType type = localGame.checkOutcome();
             if (type != PieceType::PIECE_EMPTY) {
                 globalGame.state = GameState::GAMEOVER;
+                if (type == PieceType::PIECE_BLACK) {
+                    globalGame.score.first += 1;
+                } else {
+                    globalGame.score.second += 1;
+                }
             }
         }
 
