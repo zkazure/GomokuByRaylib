@@ -7,7 +7,7 @@
 #include "player.hpp"
 
 int main() {
-    GlobalGame globalGame({800, 600}, GameState::INITIAL);
+    GlobalGame globalGame({800, 600}, GlobalGameState::INITIAL);
 
     InitWindow(globalGame.screenLayout.x, globalGame.screenLayout.y, "Gomoku By Raylib");
 
@@ -39,7 +39,7 @@ int main() {
         EndDrawing();
 
         {
-            if (globalGame.state == GameState::GAMEOVER) {
+            if (globalGame.state == GlobalGameState::GAMEOVER) {
                 continue;
             }
         }
@@ -54,10 +54,10 @@ int main() {
         }
 
         {
-            PieceType type = localGame.checkOutcome();
-            if (type != PieceType::PIECE_EMPTY) {
-                globalGame.state = GameState::GAMEOVER;
-                if (type == PieceType::PIECE_BLACK) {
+            localGame.checkOutcome();
+            if (localGame.state != LocalGameState::PALYING) {
+                globalGame.state = GlobalGameState::GAMEOVER;
+                if (localGame.state == LocalGameState::BLACK_WIN) {
                     globalGame.score.first += 1;
                 } else {
                     globalGame.score.second += 1;
@@ -68,7 +68,7 @@ int main() {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             board.createPiece(GetMousePosition(), currPlayer->getPlaying());
             if (testButton.isToggled(GetMousePosition())) {
-                globalGame.state = GameState::GAMEOVER;
+                globalGame.state = GlobalGameState::GAMEOVER;
             }
         }
 

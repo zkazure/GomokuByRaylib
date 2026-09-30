@@ -8,13 +8,13 @@
 class GlobalGame {
 public:
     Vector2 screenLayout = {800, 600};
-    GameState state = GameState::INITIAL;
+    GlobalGameState state = GlobalGameState::INITIAL;
     Color boardBackground = GREEN;
     std::pair<int, int> score = {0, 0};
 
 public:
-    GlobalGame(Vector2 sl, GameState s);
-    GlobalGame(Vector2 sl, GameState s, Color bbg);
+    GlobalGame(Vector2 sl, GlobalGameState s);
+    GlobalGame(Vector2 sl, GlobalGameState s, Color bbg);
 };
 
 
@@ -30,6 +30,7 @@ struct Move {
 class LocalGame {
 public:
     int boardSize = 15;
+    LocalGameState state = LocalGameState::PALYING;
     std::vector<std::vector<PieceType>> boardState;
     std::stack<Move> moveHistory;
 
@@ -38,5 +39,5 @@ public:
     LocalGame(int bs);
     bool make1Move(Coordinate coor, PieceType type);
     Move getLastMove() const;
-    PieceType checkOutcome() const;
+    void checkOutcome();
 };

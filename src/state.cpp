@@ -1,9 +1,9 @@
 #include "state.hpp"
 #include "type.hpp"
 
-GlobalGame::GlobalGame(Vector2 sl, GameState s)
+GlobalGame::GlobalGame(Vector2 sl, GlobalGameState s)
     : screenLayout(sl), state(s) {}
-GlobalGame::GlobalGame(Vector2 sl, GameState s, Color bbg)
+GlobalGame::GlobalGame(Vector2 sl, GlobalGameState s, Color bbg)
     : screenLayout(sl), state(s), boardBackground(bbg) {}
 
 
@@ -48,95 +48,116 @@ Move LocalGame::getLastMove() const {
     return moveHistory.top();
 }
 
-PieceType LocalGame::checkOutcome() const {
+void LocalGame::checkOutcome() {
     Move lastMove = getLastMove();
     if (lastMove.type == PieceType::PIECE_EMPTY) {
-        return lastMove.type;
+        return ;
     }
 
-    int cnt = 0;
-    for (Coordinate nearMove = {lastMove.row, lastMove.col};
-         nearMove.first > 0 && nearMove.first <= boardSize &&
-             nearMove.second > 0 && nearMove.second <= boardSize;
-         nearMove.first += 1) {
-        if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
-            cnt += 1;
+    {
+        int cnt = 0;
+        for (Coordinate nearMove = {lastMove.row, lastMove.col};
+             nearMove.first > 0 && nearMove.first <= boardSize &&
+                 nearMove.second > 0 && nearMove.second <= boardSize;
+             nearMove.first += 1) {
+            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+                cnt += 1;
+            }
         }
-    }
-    for (Coordinate nearMove = {lastMove.row-1, lastMove.col};
-         nearMove.first > 0 && nearMove.first <= boardSize &&
-             nearMove.second > 0 && nearMove.second <= boardSize;
-         nearMove.first -= 1) {
-        if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
-            cnt += 1;
+        for (Coordinate nearMove = {lastMove.row-1, lastMove.col};
+             nearMove.first > 0 && nearMove.first <= boardSize &&
+                 nearMove.second > 0 && nearMove.second <= boardSize;
+             nearMove.first -= 1) {
+            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+                cnt += 1;
+            }
         }
-    }
-    if (cnt >= 5) {
-        return lastMove.type;
+        if (cnt >= 5) {
+            if (lastMove.type == PieceType::PIECE_BLACK) {
+                state = LocalGameState::BLACK_WIN;
+            } else {
+                state = LocalGameState::WHITE_WIN;
+            }
+        }
+
+        cnt = 0;
+        for (Coordinate nearMove = {lastMove.row, lastMove.col};
+             nearMove.first > 0 && nearMove.first <= boardSize &&
+                 nearMove.second > 0 && nearMove.second <= boardSize;
+             nearMove.second += 1) {
+            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+                cnt += 1;
+            }
+        }
+        for (Coordinate nearMove = {lastMove.row, lastMove.col-1};
+             nearMove.first > 0 && nearMove.first <= boardSize &&
+                 nearMove.second > 0 && nearMove.second <= boardSize;
+             nearMove.second -= 1) {
+            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+                cnt += 1;
+            }
+        }
+        if (cnt >= 5) {
+            if (lastMove.type == PieceType::PIECE_BLACK) {
+                state = LocalGameState::BLACK_WIN;
+            } else {
+                state = LocalGameState::WHITE_WIN;
+            }
+        }
+
+        cnt = 0;
+        for (Coordinate nearMove = {lastMove.row, lastMove.col};
+             nearMove.first > 0 && nearMove.first <= boardSize &&
+                 nearMove.second > 0 && nearMove.second <= boardSize;
+             nearMove.first += 1, nearMove.second += 1) {
+            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+                cnt += 1;
+            }
+        }
+        for (Coordinate nearMove = {lastMove.row-1, lastMove.col-1};
+             nearMove.first > 0 && nearMove.first <= boardSize &&
+                 nearMove.second > 0 && nearMove.second <= boardSize;
+             nearMove.first -= 1, nearMove.second -= 1) {
+            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+                cnt += 1;
+            }
+        }
+        if (cnt >= 5) {
+            if (lastMove.type == PieceType::PIECE_BLACK) {
+                state = LocalGameState::BLACK_WIN;
+            } else {
+                state = LocalGameState::WHITE_WIN;
+            }
+        }
+
+        cnt = 0;
+        for (Coordinate nearMove = {lastMove.row, lastMove.col};
+             nearMove.first > 0 && nearMove.first <= boardSize &&
+                 nearMove.second > 0 && nearMove.second <= boardSize;
+             nearMove.first += 1, nearMove.second -= 1) {
+            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+                cnt += 1;
+            }
+        }
+        for (Coordinate nearMove = {lastMove.row-1, lastMove.col+1};
+             nearMove.first > 0 && nearMove.first <= boardSize &&
+                 nearMove.second > 0 && nearMove.second <= boardSize;
+             nearMove.first -= 1, nearMove.second += 1) {
+            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+                cnt += 1;
+            }
+        }
+        if (cnt >= 5) {
+            if (lastMove.type == PieceType::PIECE_BLACK) {
+                state = LocalGameState::BLACK_WIN;
+            }                else {
+                state = LocalGameState::WHITE_WIN;
+
+            }
+        }
     }
 
-    cnt = 0;
-    for (Coordinate nearMove = {lastMove.row, lastMove.col};
-         nearMove.first > 0 && nearMove.first <= boardSize &&
-             nearMove.second > 0 && nearMove.second <= boardSize;
-         nearMove.second += 1) {
-        if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
-            cnt += 1;
-        }
-    }
-    for (Coordinate nearMove = {lastMove.row, lastMove.col-1};
-         nearMove.first > 0 && nearMove.first <= boardSize &&
-             nearMove.second > 0 && nearMove.second <= boardSize;
-         nearMove.second -= 1) {
-        if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
-            cnt += 1;
-        }
-    }
-    if (cnt >= 5) {
-        return lastMove.type;
-    }
 
-    cnt = 0;
-    for (Coordinate nearMove = {lastMove.row, lastMove.col};
-         nearMove.first > 0 && nearMove.first <= boardSize &&
-             nearMove.second > 0 && nearMove.second <= boardSize;
-         nearMove.first += 1, nearMove.second += 1) {
-        if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
-            cnt += 1;
-        }
-    }
-    for (Coordinate nearMove = {lastMove.row-1, lastMove.col-1};
-         nearMove.first > 0 && nearMove.first <= boardSize &&
-             nearMove.second > 0 && nearMove.second <= boardSize;
-         nearMove.first -= 1, nearMove.second -= 1) {
-        if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
-            cnt += 1;
-        }
-    }
-    if (cnt >= 5) {
-        return lastMove.type;
-    }
 
-    cnt = 0;
-    for (Coordinate nearMove = {lastMove.row, lastMove.col};
-         nearMove.first > 0 && nearMove.first <= boardSize &&
-             nearMove.second > 0 && nearMove.second <= boardSize;
-         nearMove.first += 1, nearMove.second -= 1) {
-        if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
-            cnt += 1;
-        }
-    }
-    for (Coordinate nearMove = {lastMove.row-1, lastMove.col+1};
-         nearMove.first > 0 && nearMove.first <= boardSize &&
-             nearMove.second > 0 && nearMove.second <= boardSize;
-         nearMove.first -= 1, nearMove.second += 1) {
-        if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
-            cnt += 1;
-        }
-    }
-    if (cnt >= 5) {
-        return lastMove.type;
-    }
-
-    return PieceType::PIECE_EMPTY;
+    return ;
 }

@@ -20,10 +20,14 @@ bear --output build/compile_commands.json -- make
 * Design
 
 ** Type
-- GameState
+- GlobalGameState
   + initial
   + playing
   + gameover
+- LocalGameState
+  + playing
+  + black_win
+  + white_win
 - PieceType:
   + empty
   + black
