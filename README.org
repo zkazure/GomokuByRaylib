@@ -64,6 +64,7 @@ bear --output build/compile_commands.json -- make
 - Make1Move: 改变 boardState、moveHistory.
 - getLastMove: 拿到最近一步棋的相关参数，如果没有则返回一个 PieceType::EMPTY 的 Move。
 - checkOutcome: 检查胜负，返回胜出棋子的 PieceType, 如果没有则返回 PieceType::EMPTY.
+- clear：清空棋盘
 ** Object
 
 Everything which is visible in game is an ~object~.
@@ -87,6 +88,7 @@ Everything which is visible in game is an ~object~.
 - coor2pos
 - createPiece: 同时调用 localGame->make1Move
 - regret：悔棋
+- clear：清空棋盘
 
 
 *** Piece
@@ -123,7 +125,7 @@ Everything which is visible in game is an ~object~.
 
 - localGame: 获取本局胜负
 
-* Roadmap [90%]
+* Roadmap [100%]
 
 MVP: 双人交替下五子棋。
 架构设计要尽可能为 AI、联网功能、画面优化腾出空间。
@@ -150,4 +152,4 @@ MVP: 双人交替下五子棋。
 - [X] regret move
 - [X] check rule
 - [X] win/loss Count
-- [ ] gameState changing
+- [X] gameState changing

@@ -42,6 +42,7 @@ public:
     bool createPiece(Coordinate coor, PieceType type);
     bool createPiece(Vector2 position, PieceType type);
     PieceType regret();
+    void clear();
 };
 
 

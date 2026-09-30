@@ -185,6 +185,21 @@ PieceType Board::regret() {
     return type;
 }
 
+void Board::clear() {
+    int size = localGame->boardSize;
+
+    for (int i = 1; i < size; ++i) {
+        for (int j = 1; j < size; ++j) {
+            if (pieces[i][j] != nullptr) {
+                delete pieces[i][j];
+                pieces[i][j] = nullptr;
+            }
+        }
+    }
+
+    localGame->clear();
+}
+
 Piece::Piece(const Board *b, Vector2 p, PieceType t) : board(b), Object(p), type(t) {}
 void Piece::draw() {
     if (type == PieceType::PIECE_BLACK) {

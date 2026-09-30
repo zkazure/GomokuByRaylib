@@ -46,7 +46,9 @@ int main() {
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && nextRoundButton.isToggled(GetMousePosition())) {
                 globalGame.state = GlobalGameState::PLAYING;
+                board.clear();
             }
+            
             if (globalGame.state == GlobalGameState::GAMEOVER) {
                 continue;
             }

@@ -40,4 +40,5 @@ public:
     bool make1Move(Coordinate coor, PieceType type);
     Move getLastMove() const;
     void checkOutcome();
+    void clear();
 };
