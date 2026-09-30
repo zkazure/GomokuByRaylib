@@ -19,7 +19,7 @@ int main() {
     Player whitePlayer(PieceType::PIECE_WHITE);
     Player *currPlayer = &blackPlayer;
 
-    Button testButton({400, 300}, "testButton", 16);
+    Button testButton({700, 500}, "testButton", 16);
 
 
     SetTargetFPS(60);
