@@ -31,7 +31,7 @@ struct Move {
 class LocalGame {
 public:
     int boardSize = 15;
-    LocalGameState state = LocalGameState::PALYING;
+    LocalGameState state = LocalGameState::PLAYING;
     Player player = Player(PieceType::PIECE_BLACK);
     std::vector<std::vector<PieceType>> boardState;
     std::stack<Move> moveHistory;

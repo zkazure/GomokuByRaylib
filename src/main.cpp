@@ -32,7 +32,7 @@ int main() {
 
             board.draw();
 
-            if (localGame.state != LocalGameState::PALYING) {
+            if (localGame.state != LocalGameState::PLAYING) {
                 nextRoundButton.draw();
             }
 
@@ -54,7 +54,7 @@ int main() {
 
         {
             localGame.checkOutcome();
-            if (localGame.state != LocalGameState::PALYING) {
+            if (localGame.state != LocalGameState::PLAYING) {
                 globalGame.state = GlobalGameState::GAMEOVER;
                 if (localGame.state == LocalGameState::BLACK_WIN) {
                     globalGame.score.first += 1;
