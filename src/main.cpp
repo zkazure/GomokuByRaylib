@@ -19,7 +19,7 @@ int main() {
     Player whitePlayer(PieceType::PIECE_WHITE);
     Player *currPlayer = &blackPlayer;
 
-    Button testButton({700, 500}, "testButton", 16);
+    Button nextRoundButton({700, 500}, "next round", 16);
     ScoreBoard scoreBoard({700, 100}, &globalGame);
     WinLossDeclare winLossDeclare({650, 200}, &localGame);
 
@@ -34,13 +34,19 @@ int main() {
 
             board.draw();
 
-            testButton.draw();
+            if (localGame.state != LocalGameState::PALYING) {
+                nextRoundButton.draw();
+            }
+
             scoreBoard.draw();
             winLossDeclare.draw();
         }
         EndDrawing();
 
         {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && nextRoundButton.isToggled(GetMousePosition())) {
+                globalGame.state = GlobalGameState::PLAYING;
+            }
             if (globalGame.state == GlobalGameState::GAMEOVER) {
                 continue;
             }
@@ -69,9 +75,6 @@ int main() {
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             board.createPiece(GetMousePosition(), currPlayer->getPlaying());
-            if (testButton.isToggled(GetMousePosition())) {
-                globalGame.state = GlobalGameState::GAMEOVER;
-            }
         }
 
         if (IsKeyPressed(KEY_Z)) {
