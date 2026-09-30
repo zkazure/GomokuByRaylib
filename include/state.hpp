@@ -3,6 +3,7 @@
 #include <stack>
 #include <utility>
 #include "type.hpp"
+#include "player.hpp"
 #include "raylib.h"
 
 class GlobalGame {
@@ -31,6 +32,7 @@ class LocalGame {
 public:
     int boardSize = 15;
     LocalGameState state = LocalGameState::PALYING;
+    Player player = Player(PieceType::PIECE_BLACK);
     std::vector<std::vector<PieceType>> boardState;
     std::stack<Move> moveHistory;
 
@@ -41,4 +43,5 @@ public:
     Move getLastMove() const;
     void checkOutcome();
     void clear();
+    void nextTurn();
 };

@@ -2,11 +2,8 @@
 
 #include "type.hpp"
 
-class Player {
-private:
+struct Player {
     PieceType playing = PieceType::PIECE_EMPTY;
 
-public:
     Player(PieceType t);
-    PieceType getPlaying() const;
 };

@@ -182,6 +182,8 @@ PieceType Board::regret() {
 
     localGame->boardState[lastMove.row][lastMove.col] = PieceType::PIECE_EMPTY;
 
+    localGame->player = type;
+    
     return type;
 }
 

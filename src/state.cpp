@@ -37,6 +37,8 @@ bool LocalGame::make1Move(Coordinate coor, PieceType type) {
     boardState[coor.first][coor.second] = type;
     moveHistory.push(Move(coor.first, coor.second, type));
 
+    nextTurn();
+
     return true;
 }
 
@@ -173,5 +175,15 @@ void LocalGame::clear() {
 
     while (!moveHistory.empty()) {
         moveHistory.pop();
+    }
+
+    player.playing = PieceType::PIECE_BLACK;
+}
+
+void LocalGame::nextTurn() {
+    if (player.playing == PieceType::PIECE_BLACK) {
+        player.playing = PieceType::PIECE_WHITE;
+    } else {
+        player.playing = PieceType::PIECE_BLACK;
     }
 }

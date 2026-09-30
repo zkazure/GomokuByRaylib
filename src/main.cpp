@@ -15,9 +15,7 @@ int main() {
     Board board(&globalGame, &localGame,
                 {globalGame.screenLayout.x/2, globalGame.screenLayout.y/2});
 
-    Player blackPlayer(PieceType::PIECE_BLACK);
-    Player whitePlayer(PieceType::PIECE_WHITE);
-    Player *currPlayer = &blackPlayer;
+    Player *currPlayer = &localGame.player;
 
     Button nextRoundButton({700, 500}, "next round", 16);
     ScoreBoard scoreBoard({700, 100}, &globalGame);
@@ -48,18 +46,9 @@ int main() {
                 globalGame.state = GlobalGameState::PLAYING;
                 board.clear();
             }
-            
+
             if (globalGame.state == GlobalGameState::GAMEOVER) {
                 continue;
-            }
-        }
-
-        {
-            Move lastMove = localGame.getLastMove();
-            if (lastMove.type == PieceType::PIECE_BLACK) {
-                currPlayer = &whitePlayer;
-            } else if (lastMove.type == PieceType::PIECE_WHITE) {
-                currPlayer = &blackPlayer;
             }
         }
 
@@ -76,18 +65,11 @@ int main() {
         }
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            board.createPiece(GetMousePosition(), currPlayer->getPlaying());
+            board.createPiece(GetMousePosition(), currPlayer->playing);
         }
 
         if (IsKeyPressed(KEY_Z)) {
             PieceType type = board.regret();
-            if (type == PieceType::PIECE_EMPTY) {
-                std::cout << "No History!!!\n";
-            } else if (type == PieceType::PIECE_WHITE) {
-                currPlayer = &whitePlayer;
-            } else {
-                currPlayer = &blackPlayer;
-            }
         }
     }
 
