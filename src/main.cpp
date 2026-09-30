@@ -21,6 +21,7 @@ int main() {
 
     Button testButton({700, 500}, "testButton", 16);
     ScoreBoard scoreBoard({700, 100}, &globalGame);
+    WinLossDeclare winLossDeclare({650, 200}, &localGame);
 
 
     SetTargetFPS(60);
@@ -35,6 +36,7 @@ int main() {
 
             testButton.draw();
             scoreBoard.draw();
+            winLossDeclare.draw();
         }
         EndDrawing();
 

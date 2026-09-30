@@ -2,6 +2,8 @@
 #include "menu.hpp"
 #include "object.hpp"
 #include "raylib.h"
+#include "state.hpp"
+#include "type.hpp"
 
 Button::Button(Vector2 p, std::string i, int f)
     : Object(p), info(i), fontSize(f) {}
@@ -18,8 +20,8 @@ bool Button::isToggled(Vector2 point) const {
 }
 
 
-ScoreBoard::ScoreBoard(Vector2 p, const GlobalGame * g)
-    : Object(p), globalGame(g) {}
+ScoreBoard::ScoreBoard(Vector2 p, const GlobalGame * gg)
+    : Object(p), globalGame(gg) {}
 void ScoreBoard::draw() {
     float width = 80, height = 40;
     Vector2 leftTop = Vector2Add(position, {-width/2, -height/2});
@@ -38,4 +40,21 @@ void ScoreBoard::draw() {
     DrawText(whiteCnt.str().c_str(),
              position.x + width/4, position.y + height/8,
              16, WHITE);
+}
+
+
+WinLossDeclare::WinLossDeclare(Vector2 p, const LocalGame * lg)
+    : Object(p), localGame(lg) {}
+void WinLossDeclare::draw() {
+    std::stringstream declaration;
+
+    if (localGame->state == LocalGameState::BLACK_WIN) {
+        declaration << "Black wins !!!";
+    } else if (localGame->state == LocalGameState::WHITE_WIN) {
+        declaration << "White wins !!!";
+    }
+
+    DrawText(declaration.str().c_str(),
+             position.x, position.y,
+             16, RED);
 }

@@ -25,6 +25,16 @@ private:
     const GlobalGame * globalGame;
 
 public:
-    ScoreBoard(Vector2 p, const GlobalGame * g);
+    ScoreBoard(Vector2 p, const GlobalGame * gg);
+    void draw() override;
+};
+
+
+class WinLossDeclare : public Object {
+private:
+    const LocalGame * localGame;
+
+public:
+    WinLossDeclare(Vector2 p, const LocalGame * lg);
     void draw() override;
 };

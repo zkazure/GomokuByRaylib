@@ -119,6 +119,10 @@ Everything which is visible in game is an ~object~.
 
 - globalGame 获取得分。
 
+**** WinLossDeclare
+
+- localGame: 获取本局胜负
+
 * Roadmap [90%]
 
 MVP: 双人交替下五子棋。
