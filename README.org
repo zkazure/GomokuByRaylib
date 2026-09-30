@@ -111,7 +111,11 @@ Everything which is visible in game is an ~object~.
 
 - isToggled: 检测当前按钮是否被按下
 
-* Roadmap [72%]
+**** ScoreBoard
+
+- globalGame 获取得分。
+
+* Roadmap [90%]
 
 MVP: 双人交替下五子棋。
 架构设计要尽可能为 AI、联网功能、画面优化腾出空间。
@@ -137,5 +141,5 @@ MVP: 双人交替下五子棋。
 - [X] player play each turn
 - [X] regret move
 - [X] check rule
+- [X] win/loss Count
 - [ ] gameState changing
-- [ ] win/loss Count

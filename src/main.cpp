@@ -20,6 +20,7 @@ int main() {
     Player *currPlayer = &blackPlayer;
 
     Button testButton({700, 500}, "testButton", 16);
+    ScoreBoard scoreBoard({700, 100}, &globalGame);
 
 
     SetTargetFPS(60);
@@ -33,6 +34,7 @@ int main() {
             board.draw();
 
             testButton.draw();
+            scoreBoard.draw();
         }
         EndDrawing();
 

@@ -1,3 +1,4 @@
+#include <sstream>
 #include "menu.hpp"
 #include "object.hpp"
 #include "raylib.h"
@@ -14,4 +15,27 @@ bool Button::isToggled(Vector2 point) const {
     return (point.x >= leftTop.x && point.y >= leftTop.y)
         &&
         (point.x <= leftTop.x+width && point.y <= leftTop.y+height);
+}
+
+
+ScoreBoard::ScoreBoard(Vector2 p, const GlobalGame * g)
+    : Object(p), globalGame(g) {}
+void ScoreBoard::draw() {
+    float width = 80, height = 40;
+    Vector2 leftTop = Vector2Add(position, {-width/2, -height/2});
+    DrawRectangleV(leftTop, {width, height}, RED);
+
+    std::stringstream blackCnt, whiteCnt;
+    blackCnt << globalGame->score.first;
+    whiteCnt << globalGame->score.second;
+
+    DrawCircle(position.x - width/4, position.y-height/4, 8, BLACK);
+    DrawText(blackCnt.str().c_str(),
+             position.x - width/4, position.y + height/8,
+             16, BLACK);
+
+    DrawCircle(position.x + width/4, position.y-height/4, 8, WHITE);
+    DrawText(whiteCnt.str().c_str(),
+             position.x + width/4, position.y + height/8,
+             16, WHITE);
 }

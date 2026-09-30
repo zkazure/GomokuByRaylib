@@ -3,6 +3,7 @@
 #include <string>
 #include "object.hpp"
 #include "raylib.h"
+#include "state.hpp"
 
 class Button : public Object {
 private:
@@ -16,4 +17,14 @@ public:
     Button(Vector2 p, std::string i, int f);
     void draw() override;
     bool isToggled(Vector2 point) const;
+};
+
+
+class ScoreBoard : public Object {
+private:
+    const GlobalGame * globalGame;
+
+public:
+    ScoreBoard(Vector2 p, const GlobalGame * g);
+    void draw() override;
 };
