@@ -188,8 +188,8 @@ PieceType Board::regret() {
 void Board::clear() {
     int size = localGame->boardSize;
 
-    for (int i = 1; i < size; ++i) {
-        for (int j = 1; j < size; ++j) {
+    for (int i = 1; i <= size; ++i) {
+        for (int j = 1; j <= size; ++j) {
             if (pieces[i][j] != nullptr) {
                 delete pieces[i][j];
                 pieces[i][j] = nullptr;

@@ -165,8 +165,8 @@ void LocalGame::checkOutcome() {
 void LocalGame::clear() {
     state = LocalGameState::PALYING;
 
-    for (int i = 1; i < boardSize; ++i) {
-        for (int j = 1; j < boardSize; ++j) {
+    for (int i = 1; i <= boardSize; ++i) {
+        for (int j = 1; j <= boardSize; ++j) {
             boardState[i][j] = PieceType::PIECE_EMPTY;
         }
     }
