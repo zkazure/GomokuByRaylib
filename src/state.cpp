@@ -62,7 +62,9 @@ void LocalGame::checkOutcome() {
              nearMove.first > 0 && nearMove.first <= boardSize &&
                  nearMove.second > 0 && nearMove.second <= boardSize;
              nearMove.first += 1) {
-            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
+                break;
+            } else {
                 cnt += 1;
             }
         }
@@ -70,7 +72,9 @@ void LocalGame::checkOutcome() {
              nearMove.first > 0 && nearMove.first <= boardSize &&
                  nearMove.second > 0 && nearMove.second <= boardSize;
              nearMove.first -= 1) {
-            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
+                break;
+            } else {
                 cnt += 1;
             }
         }
@@ -87,7 +91,9 @@ void LocalGame::checkOutcome() {
              nearMove.first > 0 && nearMove.first <= boardSize &&
                  nearMove.second > 0 && nearMove.second <= boardSize;
              nearMove.second += 1) {
-            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
+                break;
+            } else {
                 cnt += 1;
             }
         }
@@ -95,7 +101,9 @@ void LocalGame::checkOutcome() {
              nearMove.first > 0 && nearMove.first <= boardSize &&
                  nearMove.second > 0 && nearMove.second <= boardSize;
              nearMove.second -= 1) {
-            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
+                break;
+            } else {
                 cnt += 1;
             }
         }
@@ -112,7 +120,9 @@ void LocalGame::checkOutcome() {
              nearMove.first > 0 && nearMove.first <= boardSize &&
                  nearMove.second > 0 && nearMove.second <= boardSize;
              nearMove.first += 1, nearMove.second += 1) {
-            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
+                break;
+            } else {
                 cnt += 1;
             }
         }
@@ -120,7 +130,9 @@ void LocalGame::checkOutcome() {
              nearMove.first > 0 && nearMove.first <= boardSize &&
                  nearMove.second > 0 && nearMove.second <= boardSize;
              nearMove.first -= 1, nearMove.second -= 1) {
-            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
+                break;
+            } else {
                 cnt += 1;
             }
         }
@@ -137,7 +149,9 @@ void LocalGame::checkOutcome() {
              nearMove.first > 0 && nearMove.first <= boardSize &&
                  nearMove.second > 0 && nearMove.second <= boardSize;
              nearMove.first += 1, nearMove.second -= 1) {
-            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
+                break;
+            } else {
                 cnt += 1;
             }
         }
@@ -145,7 +159,9 @@ void LocalGame::checkOutcome() {
              nearMove.first > 0 && nearMove.first <= boardSize &&
                  nearMove.second > 0 && nearMove.second <= boardSize;
              nearMove.first -= 1, nearMove.second += 1) {
-            if (boardState[nearMove.first][nearMove.second] == lastMove.type) {
+            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
+                break;
+            } else {
                 cnt += 1;
             }
         }
