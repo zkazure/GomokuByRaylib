@@ -1,5 +1,6 @@
 #include <iostream>
 #include <limits>
+#include <cmath>
 #include "state.hpp"
 #include "object.hpp"
 #include "raylib.h"
@@ -111,7 +112,8 @@ Coordinate Board::pos2coor(Vector2 position) const {
         }
     }
 
-    {    float distance = cellWidth;
+    {
+        float distance = cellWidth;
         Coordinate tempCoordination = coordinate;
         float tempDistance
             = Vector2Distance(position, intersections[tempCoordination.first][tempCoordination.second]);
@@ -153,6 +155,12 @@ Vector2 Board::coor2pos(Coordinate coor) const {
 }
 
 bool Board::createPiece(Coordinate coor, PieceType type) {
+    const int boardSize = localGame->boardSize;
+    if (coor.first < 1 || coor.first > boardSize
+        || coor.second < 1 || coor.second > boardSize) {
+        return false;
+    }
+
     if (!localGame->make1Move(coor, type)) {
         return false;
     }
@@ -163,6 +171,15 @@ bool Board::createPiece(Coordinate coor, PieceType type) {
 }
 
 bool Board::createPiece(Vector2 position, PieceType type) {
+    const int boardSize = localGame->boardSize;
+    if (!std::isfinite(position.x) || !std::isfinite(position.y)
+        || position.x < intersections[1][1].x
+        || position.x > intersections[boardSize][boardSize].x
+        || position.y < intersections[1][1].y
+        || position.y > intersections[boardSize][boardSize].y) {
+        return false;
+    }
+
     return createPiece(pos2coor(position), type);
 }
 
@@ -183,7 +200,7 @@ PieceType Board::regret() {
     localGame->boardState[lastMove.row][lastMove.col] = PieceType::PIECE_EMPTY;
 
     localGame->player = type;
-    
+
     return type;
 }
 
