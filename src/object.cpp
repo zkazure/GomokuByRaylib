@@ -90,6 +90,13 @@ void Board::draw() {
             }
         }
     }
+
+    Move lastMove = localGame->getLastMove();
+    if (lastMove.type != PieceType::PIECE_EMPTY) {
+        float pieceRadius = cellWidth * (float)1/7;
+        DrawCircleV(coor2pos({lastMove.row, lastMove.col}),
+                   pieceRadius, GOLD);
+    }
 }
 
 float Board::getWidth() const { return width; }
