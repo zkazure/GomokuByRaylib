@@ -47,6 +47,10 @@ int main() {
                 board.clear();
             }
 
+            if (IsKeyPressed(KEY_Z)) {
+                board.regret();
+            }
+
             if (globalGame.state == GlobalGameState::GAMEOVER) {
                 continue;
             }
@@ -68,9 +72,6 @@ int main() {
             board.createPiece(GetMousePosition(), currPlayer->playing);
         }
 
-        if (IsKeyPressed(KEY_Z)) {
-            PieceType type = board.regret();
-        }
     }
 
     CloseWindow();

@@ -11,7 +11,7 @@ Object::Object() : position({0, 0}) {}
 Object::Object(Vector2 p) : position(p) {}
 
 
-Board::Board(const GlobalGame * const g, LocalGame * l, Vector2 p)
+Board::Board(GlobalGame * const g, LocalGame * l, Vector2 p)
     : Object(p), globalGame(g), localGame(l)
 {
     int boardSize = localGame->boardSize;
@@ -200,6 +200,19 @@ PieceType Board::regret() {
     localGame->boardState[lastMove.row][lastMove.col] = PieceType::PIECE_EMPTY;
 
     localGame->player = type;
+
+    if (globalGame->state == GlobalGameState::GAMEOVER) {
+        const LocalGameState outcome = localGame->state;
+
+        if (outcome == LocalGameState::BLACK_WIN && globalGame->score.first > 0) {
+            globalGame->score.first -= 1;
+        } else if (outcome == LocalGameState::WHITE_WIN && globalGame->score.second > 0) {
+            globalGame->score.second -= 1;
+        }
+    }
+
+    localGame->state = LocalGameState::PLAYING;
+    globalGame->state = GlobalGameState::PLAYING;
 
     return type;
 }

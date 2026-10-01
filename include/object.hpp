@@ -21,7 +21,7 @@ class Piece;
 
 class Board : public Object {
 private:
-    const GlobalGame * const globalGame;
+    GlobalGame * const globalGame;
     LocalGame *localGame;
     const float ratio = (float)3/4;
     const float width = ratio * std::min(globalGame->screenLayout.x, globalGame->screenLayout.y);
@@ -32,7 +32,7 @@ private:
     std::vector<std::vector<Piece *>> pieces;
 
 public:
-    Board(const GlobalGame * const globalGame, LocalGame * localGame, Vector2 p);
+    Board(GlobalGame * const globalGame, LocalGame * localGame, Vector2 p);
     ~Board();
     void draw() override;
     float getWidth() const ;
