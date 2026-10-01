@@ -17,8 +17,8 @@ int main() {
 
     Player *currPlayer = &localGame.player;
 
-    Button nextRoundButton({700, 500}, "next round", 16);
-    ScoreBoard scoreBoard({700, 100}, &globalGame);
+    Button nextRoundButton({700, 450}, "next round", 16);
+    ScoreBoard scoreBoard({710, 120}, &globalGame);
     WinLossDeclare winLossDeclare({650, 200}, &localGame);
 
 
@@ -28,7 +28,7 @@ int main() {
     while (!WindowShouldClose()) {
         BeginDrawing();
         {
-            ClearBackground(WHITE);
+            ClearBackground(UiPalette::window);
 
             board.draw();
 
@@ -38,7 +38,7 @@ int main() {
 
             scoreBoard.draw();
             winLossDeclare.draw();
-            DrawText("Z: Undo", 650, 300, 20, RED);
+            DrawText("Z: Undo", 650, 300, 20, UiPalette::ink);
         }
         EndDrawing();
 

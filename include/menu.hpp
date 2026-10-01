@@ -9,9 +9,9 @@ class Button : public Object {
 private:
     std::string info;
     int fontSize;
-    float width = info.length() * 10;
-    float height = (float)fontSize;
-    Vector2 leftTop = Vector2Add(position, {-width/2, -width/2});
+    float width;
+    float height;
+    Vector2 leftTop;
 
 public:
     Button(Vector2 p, std::string i, int f);
