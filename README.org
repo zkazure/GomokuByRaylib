@@ -156,3 +156,13 @@ MVP: 双人交替下五子棋。
 - [X] check rule
 - [X] win/loss Count
 - [X] gameState changing
+
+
+** bonus [0/6]
+
+- [ ] ui
+- [ ] 游戏存盘续玩
+- [ ] 游戏复盘
+- [ ] 游戏操作合理性
+- [ ] 人机对弈
+- [ ] 联网模式
