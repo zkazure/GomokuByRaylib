@@ -38,6 +38,7 @@ int main() {
 
             scoreBoard.draw();
             winLossDeclare.draw();
+            DrawText("Z: Undo", 650, 300, 20, RED);
         }
         EndDrawing();
 
