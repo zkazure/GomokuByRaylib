@@ -10,7 +10,7 @@ class GlobalGame {
 public:
     Vector2 screenLayout = {800, 600};
     GlobalGameState state = GlobalGameState::INITIAL;
-    Color boardBackground = GREEN;
+    Color boardBackground = BEIGE;
     std::pair<int, int> score = {0, 0};
 
 public:

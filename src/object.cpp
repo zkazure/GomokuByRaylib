@@ -72,15 +72,15 @@ void Board::draw() {
     Color background = globalGame->boardBackground;
 
     DrawRectangleV(leftTop, {width, width}, background);
-    DrawRectangleLines(leftTop.x, leftTop.y, width, width, BLACK);
+    DrawRectangleLines(leftTop.x, leftTop.y, width, width, DARKBROWN);
 
     for (int i = 1; i <= boardSize; ++i) {
         DrawLineV(Vector2Add(intersections[1][i], {0, -cellWidth}),
                   Vector2Add(intersections[boardSize][i], {0, cellWidth}),
-                  BLACK);
+                  DARKBROWN);
         DrawLineV(Vector2Add(intersections[i][1], {-cellWidth, 0}),
                   Vector2Add(intersections[i][boardSize], {cellWidth, 0}),
-                  BLACK);
+                  DARKBROWN);
     }
 
     for (int i = 1; i <= boardSize; ++i) {
