@@ -164,8 +164,8 @@ Vector2 Board::coor2pos(Coordinate coor) const {
 
 bool Board::createPiece(Coordinate coor, PieceType type) {
     const int boardSize = localGame->boardSize;
-    if (coor.first < 1 || coor.first > boardSize
-        || coor.second < 1 || coor.second > boardSize) {
+    if (coor.first < 0 || coor.first > boardSize + 1
+        || coor.second < 0 || coor.second > boardSize + 1) {
         return false;
     }
 
@@ -181,10 +181,10 @@ bool Board::createPiece(Coordinate coor, PieceType type) {
 bool Board::createPiece(Vector2 position, PieceType type) {
     const int boardSize = localGame->boardSize;
     if (!std::isfinite(position.x) || !std::isfinite(position.y)
-        || position.x < intersections[1][1].x
-        || position.x > intersections[boardSize][boardSize].x
-        || position.y < intersections[1][1].y
-        || position.y > intersections[boardSize][boardSize].y) {
+        || position.x < intersections[1][1].x - cellWidth
+        || position.x > intersections[boardSize][boardSize].x + cellWidth
+        || position.y < intersections[1][1].y - cellWidth
+        || position.y > intersections[boardSize][boardSize].y + cellWidth) {
         return false;
     }
 
