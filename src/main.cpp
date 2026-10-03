@@ -17,11 +17,11 @@ int main() {
 
     Player *currPlayer = &localGame.player;
 
-    Button saveGameButton({700, 350}, "save game", 16);
-    Button loadGameButton({700, 400}, "load game", 16);
-    Button nextRoundButton({700, 450}, "next round", 16);
-    ScoreBoard scoreBoard({710, 120}, &globalGame);
-    WinLossDeclare winLossDeclare({650, 200}, &localGame);
+    Button saveGameButton({700, 400}, "SAVE GAME", 14);
+    Button loadGameButton({700, 450}, "LOAD GAME", 14);
+    Button nextRoundButton({700, 500}, "NEW ROUND", 14);
+    ScoreBoard scoreBoard({650, 150}, &globalGame);
+    WinLossDeclare winLossDeclare({650, 215}, &localGame);
 
 
     SetTargetFPS(60);
@@ -34,6 +34,10 @@ int main() {
 
             board.draw();
 
+            DrawText("GOMOKU", 650, 75, 24, UiPalette::ink);
+            DrawText("FIVE IN A ROW", 651, 100, 10, UiPalette::muted);
+            DrawLine(650, 115, 750, 115, UiPalette::ink);
+
             saveGameButton.draw();
             loadGameButton.draw();
 
@@ -43,7 +47,11 @@ int main() {
 
             scoreBoard.draw();
             winLossDeclare.draw();
-            DrawText("Z: Undo", 650, 300, 20, UiPalette::ink);
+            DrawText("CONTROLS", 640, 260, 10, UiPalette::muted);
+            DrawRectangleLines(640, 278, 120, 36, UiPalette::ink);
+            DrawRectangle(640, 278, 3, 36, UiPalette::accent);
+            DrawText("Z", 651, 286, 18, UiPalette::accent);
+            DrawText("UNDO", 676, 289, 12, UiPalette::ink);
         }
         EndDrawing();
 

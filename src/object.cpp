@@ -69,18 +69,19 @@ Board::~Board() {
 
 void Board::draw() {
     int boardSize = localGame->boardSize;
-    Color background = globalGame->boardBackground;
+    Color background = UiPalette::board;
 
     DrawRectangleV(leftTop, {width, width}, background);
-    DrawRectangleLines(leftTop.x, leftTop.y, width, width, DARKBROWN);
+    DrawRectangleLines((int)leftTop.x, (int)leftTop.y, (int)width, (int)width,
+                       UiPalette::ink);
 
     for (int i = 1; i <= boardSize; ++i) {
         DrawLineV(Vector2Add(intersections[1][i], {0, -cellWidth}),
                   Vector2Add(intersections[boardSize][i], {0, cellWidth}),
-                  DARKBROWN);
+                  UiPalette::ink);
         DrawLineV(Vector2Add(intersections[i][1], {-cellWidth, 0}),
                   Vector2Add(intersections[i][boardSize], {cellWidth, 0}),
-                  DARKBROWN);
+                  UiPalette::ink);
     }
 
     for (int i = 1; i <= boardSize; ++i) {
@@ -95,7 +96,7 @@ void Board::draw() {
     if (lastMove.type != PieceType::PIECE_EMPTY) {
         float pieceRadius = cellWidth * (float)1/7;
         DrawCircleV(coor2pos({lastMove.row, lastMove.col}),
-                   pieceRadius, GOLD);
+                   pieceRadius, UiPalette::accent);
     }
 }
 

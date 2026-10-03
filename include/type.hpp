@@ -11,9 +11,11 @@ enum class PieceType {PIECE_EMPTY, PIECE_BLACK, PIECE_WHITE};
 typedef std::pair<int, int> Coordinate;
 
 namespace UiPalette {
-    constexpr Color window = {247, 243, 232, 255};
-    constexpr Color panel = {255, 252, 244, 255};
-    constexpr Color ink = {76, 63, 47, 255};
-    constexpr Color border = {200, 181, 143, 255};
-    constexpr Color accent = {218, 165, 32, 255};
+    constexpr Color window = {246, 246, 242, 255};
+    constexpr Color panel = {255, 255, 255, 255};
+    constexpr Color ink = {24, 24, 24, 255};
+    constexpr Color border = {24, 24, 24, 255};
+    constexpr Color accent = {220, 38, 38, 255};
+    constexpr Color board = {210, 210, 202, 255};
+    constexpr Color muted = {105, 105, 100, 255};
 }

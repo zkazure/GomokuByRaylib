@@ -11,12 +11,14 @@ Button::Button(Vector2 p, std::string i, int f)
 
 void Button::draw() {
     Rectangle bounds = {leftTop.x, leftTop.y, width, height};
-    DrawRectangleRec(bounds, UiPalette::ink);
+    DrawRectangleRec(bounds, UiPalette::panel);
+    DrawRectangleLinesEx(bounds, 1, UiPalette::ink);
+    DrawRectangle((int)leftTop.x, (int)leftTop.y, 3, (int)height,
+                  UiPalette::accent);
 
-    int textWidth = MeasureText(info.c_str(), fontSize);
-    DrawText(info.c_str(), leftTop.x + (width - textWidth)/2,
+    DrawText(info.c_str(), leftTop.x + 14,
              leftTop.y + (height - fontSize)/2, fontSize,
-             UiPalette::panel);
+             UiPalette::ink);
 }
 
 bool Button::isToggled(Vector2 point) const {
@@ -33,19 +35,19 @@ void ScoreBoard::draw() {
     const std::string blackText = blackCnt.str();
     const std::string whiteText = whiteCnt.str();
 
-    DrawText("Score", position.x - 46, position.y - 30, 16, UiPalette::ink);
-    DrawCircleV({position.x - 39, position.y + 4}, 7, BLACK);
-    DrawText("Black", position.x - 26, position.y - 4, 14, UiPalette::ink);
+    DrawText("SCORE", position.x, position.y - 22, 11, UiPalette::muted);
+    DrawCircleV({position.x + 6, position.y + 15}, 6, UiPalette::ink);
+    DrawText("BLACK", position.x + 20, position.y + 7, 12, UiPalette::ink);
     DrawText(blackText.c_str(),
-             (int)(position.x + 58 - MeasureText(blackText.c_str(), 18)),
-             position.y - 5, 18, UiPalette::ink);
+             (int)(position.x + 100 - MeasureText(blackText.c_str(), 20)),
+             position.y + 4, 20, UiPalette::ink);
 
-    DrawCircleV({position.x - 39, position.y + 32}, 7, WHITE);
-    DrawCircleLines((int)position.x - 39, (int)position.y + 32, 7, UiPalette::border);
-    DrawText("White", position.x - 26, position.y + 24, 14, UiPalette::ink);
+    DrawCircleV({position.x + 6, position.y + 45}, 6, UiPalette::panel);
+    DrawCircleLines((int)position.x + 6, (int)position.y + 45, 6, UiPalette::ink);
+    DrawText("WHITE", position.x + 20, position.y + 37, 12, UiPalette::ink);
     DrawText(whiteText.c_str(),
-             (int)(position.x + 58 - MeasureText(whiteText.c_str(), 18)),
-             position.y + 23, 18, UiPalette::ink);
+             (int)(position.x + 100 - MeasureText(whiteText.c_str(), 20)),
+             position.y + 34, 20, UiPalette::ink);
 }
 
 
@@ -60,5 +62,5 @@ void WinLossDeclare::draw() {
     }
 
     DrawText(declaration, position.x, position.y, 16,
-             localGame->state == LocalGameState::PLAYING ? UiPalette::ink : GOLD);
+             localGame->state == LocalGameState::PLAYING ? UiPalette::ink : UiPalette::accent);
 }
