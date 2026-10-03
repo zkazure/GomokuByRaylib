@@ -1,5 +1,7 @@
 #include "state.hpp"
 #include "type.hpp"
+#include <fstream>
+#include <vector>
 
 GlobalGame::GlobalGame(Vector2 sl, GlobalGameState s)
     : screenLayout(sl), state(s) {}
@@ -202,4 +204,78 @@ void LocalGame::nextTurn() {
     } else {
         player.playing = PieceType::PIECE_BLACK;
     }
+}
+
+bool LocalGame::saveToFile(const std::string& path) const {
+    std::ofstream file(path);
+    if (!file) {
+        return false;
+    }
+
+    file << boardSize << '\n'
+         << static_cast<int>(state) << '\n'
+         << static_cast<int>(player.playing) << '\n';
+
+    for (int row = 1; row <= boardSize; ++row) {
+        for (int col = 1; col <= boardSize; ++col) {
+            file << static_cast<int>(boardState[row][col]) << ' ';
+        }
+        file << '\n';
+    }
+
+    std::stack<Move> history = moveHistory;
+    std::vector<Move> moves;
+    while (!history.empty()) {
+        moves.push_back(history.top());
+        history.pop();
+    }
+
+    file << moves.size() << '\n';
+    for (auto move = moves.rbegin(); move != moves.rend(); ++move) {
+        file << move->row << ' ' << move->col << ' '
+             << static_cast<int>(move->type) << '\n';
+    }
+
+    return static_cast<bool>(file);
+}
+
+bool LocalGame::loadFromFile(const std::string& path) {
+    std::ifstream file(path);
+    if (!file) {
+        return false;
+    }
+
+    int loadedBoardSize = 0;
+    int loadedState = 0;
+    int loadedPlayer = 0;
+    file >> loadedBoardSize >> loadedState >> loadedPlayer;
+
+    std::vector<std::vector<PieceType>> loadedBoard(
+        loadedBoardSize + 2,
+        std::vector<PieceType>(loadedBoardSize + 2, PieceType::PIECE_EMPTY));
+    for (int row = 1; row <= loadedBoardSize; ++row) {
+        for (int col = 1; col <= loadedBoardSize; ++col) {
+            int pieceType = 0;
+            file >> pieceType;
+            loadedBoard[row][col] = static_cast<PieceType>(pieceType);
+        }
+    }
+
+    std::size_t moveCount = 0;
+    file >> moveCount;
+    std::stack<Move> loadedHistory;
+    for (std::size_t i = 0; i < moveCount; ++i) {
+        int row = 0;
+        int col = 0;
+        int pieceType = 0;
+        file >> row >> col >> pieceType;
+        loadedHistory.push(Move(row, col, static_cast<PieceType>(pieceType)));
+    }
+
+    boardSize = loadedBoardSize;
+    state = static_cast<LocalGameState>(loadedState);
+    player.playing = static_cast<PieceType>(loadedPlayer);
+    boardState = std::move(loadedBoard);
+    moveHistory = std::move(loadedHistory);
+    return true;
 }

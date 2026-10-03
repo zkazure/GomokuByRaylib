@@ -57,6 +57,7 @@ bear --output build/compile_commands.json -- make
 
 - boardSize (default 15): standard board is 15 x 15.
   which determines how many rows and columns.
+- state: playing, black_win, white_win.
 - player：当前下棋的玩家
 - boardState：棋盘上棋子的分布 (row, col).
 - moveHistory: 上一步棋的历史
@@ -67,6 +68,16 @@ bear --output build/compile_commands.json -- make
 - checkOutcome: 检查胜负。
 - clear：清空棋盘
 - nextTurn：下一位玩家
+- saveToFile:
+  #+begin_example
+  boardSize
+  state
+  player
+  boardState
+  moveHistory.size()
+  moveHistory
+  #+end_example
+- loadFromFile
 
 ** Object
 

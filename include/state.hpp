@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <stack>
+#include <string>
 #include <utility>
 #include "type.hpp"
 #include "player.hpp"
@@ -44,4 +45,6 @@ public:
     void checkOutcome();
     void clear();
     void nextTurn();
+    bool saveToFile(const std::string& path) const;
+    bool loadFromFile(const std::string& path);
 };
