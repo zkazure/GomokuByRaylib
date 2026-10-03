@@ -43,6 +43,7 @@ public:
     bool createPiece(Vector2 position, PieceType type);
     PieceType regret();
     void clear();
+    void syncPiecesFromLocalGame();
 };
 
 

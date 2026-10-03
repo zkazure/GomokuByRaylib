@@ -17,6 +17,8 @@ int main() {
 
     Player *currPlayer = &localGame.player;
 
+    Button saveGameButton({700, 350}, "save game", 16);
+    Button loadGameButton({700, 400}, "load game", 16);
     Button nextRoundButton({700, 450}, "next round", 16);
     ScoreBoard scoreBoard({710, 120}, &globalGame);
     WinLossDeclare winLossDeclare({650, 200}, &localGame);
@@ -32,6 +34,9 @@ int main() {
 
             board.draw();
 
+            saveGameButton.draw();
+            loadGameButton.draw();
+
             if (localGame.state != LocalGameState::PLAYING) {
                 nextRoundButton.draw();
             }
@@ -43,9 +48,23 @@ int main() {
         EndDrawing();
 
         {
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && nextRoundButton.isToggled(GetMousePosition())) {
-                globalGame.state = GlobalGameState::PLAYING;
-                board.clear();
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                Vector2 mousePosition = GetMousePosition();
+                if (saveGameButton.isToggled(mousePosition)) {
+                    localGame.saveToFile("gomoku.save");
+                } else if (loadGameButton.isToggled(mousePosition)) {
+                    if (localGame.loadFromFile("gomoku.save")) {
+                        board.syncPiecesFromLocalGame();
+                        globalGame.state =
+                            localGame.state == LocalGameState::PLAYING
+                            ? GlobalGameState::PLAYING
+                            : GlobalGameState::GAMEOVER;
+                    }
+                } else if (localGame.state != LocalGameState::PLAYING
+                           && nextRoundButton.isToggled(mousePosition)) {
+                    globalGame.state = GlobalGameState::PLAYING;
+                    board.clear();
+                }
             }
 
             if (IsKeyPressed(KEY_Z)) {

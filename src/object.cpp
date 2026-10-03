@@ -239,6 +239,24 @@ void Board::clear() {
     localGame->clear();
 }
 
+void Board::syncPiecesFromLocalGame() {
+    int size = localGame->boardSize;
+
+    for (int row = 1; row <= size; ++row) {
+        for (int col = 1; col <= size; ++col) {
+            if (pieces[row][col] != nullptr) {
+                delete pieces[row][col];
+                pieces[row][col] = nullptr;
+            }
+
+            PieceType type = localGame->boardState[row][col];
+            if (type != PieceType::PIECE_EMPTY) {
+                pieces[row][col] = new Piece(this, coor2pos({row, col}), type);
+            }
+        }
+    }
+}
+
 Piece::Piece(const Board *b, Vector2 p, PieceType t) : board(b), Object(p), type(t) {}
 void Piece::draw() {
     if (type == PieceType::PIECE_BLACK) {
