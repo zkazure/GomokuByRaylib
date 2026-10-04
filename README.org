@@ -102,7 +102,7 @@ Everything which is visible in game is an ~object~.
 - pos2coor: convert position on screen to coordinate on the board.
 - coor2pos
 - createPiece: 同时调用 localGame->make1Move
-- regret：悔棋
+- undo：悔棋
 - redo: 取消悔棋
 - clear：清空棋盘
 

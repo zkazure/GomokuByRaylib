@@ -72,7 +72,7 @@ int main() {
                     }
                 } else if (undoButton.isToggled(mousePosition)) {
                     buttonClicked = true;
-                    board.regret();
+                    board.undo();
                 } else if (redoButton.isToggled(mousePosition)) {
                     buttonClicked = true;
                     board.redo();

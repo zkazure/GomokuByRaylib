@@ -191,7 +191,7 @@ bool Board::createPiece(Vector2 position, PieceType type) {
     return createPiece(pos2coor(position), type);
 }
 
-PieceType Board::regret() {
+PieceType Board::undo() {
     if (localGame->moveHistory.empty()) {
         return PieceType::PIECE_EMPTY;
     }
