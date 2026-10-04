@@ -11,18 +11,25 @@ Button::Button(Vector2 p, std::string i, int f)
 
 void Button::draw() {
     Rectangle bounds = {leftTop.x, leftTop.y, width, height};
-    DrawRectangleRec(bounds, UiPalette::panel);
-    DrawRectangleLinesEx(bounds, 1, UiPalette::ink);
+    const Color background = enabled ? UiPalette::panel : UiPalette::disabled;
+    const Color foreground = enabled ? UiPalette::ink : UiPalette::disabledInk;
+    DrawRectangleRec(bounds, background);
+    DrawRectangleLinesEx(bounds, 1, foreground);
     DrawRectangle((int)leftTop.x, (int)leftTop.y, 3, (int)height,
-                  UiPalette::accent);
+                  enabled ? UiPalette::accent : UiPalette::disabledInk);
 
     DrawText(info.c_str(), leftTop.x + 14,
              leftTop.y + (height - fontSize)/2, fontSize,
-             UiPalette::ink);
+             foreground);
 }
 
 bool Button::isToggled(Vector2 point) const {
-    return CheckCollisionPointRec(point, {leftTop.x, leftTop.y, width, height});
+    return enabled
+        && CheckCollisionPointRec(point, {leftTop.x, leftTop.y, width, height});
+}
+
+void Button::setEnabled(bool value) {
+    enabled = value;
 }
 
 

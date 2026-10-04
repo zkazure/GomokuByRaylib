@@ -30,6 +30,10 @@ int main() {
 
 
     while (!WindowShouldClose()) {
+        undoButton.setEnabled(!localGame.moveHistory.empty());
+        redoButton.setEnabled(!localGame.rmoveHistory.empty());
+        nextRoundButton.setEnabled(localGame.state != LocalGameState::PLAYING);
+
         BeginDrawing();
         {
             ClearBackground(UiPalette::window);
@@ -45,9 +49,7 @@ int main() {
             undoButton.draw();
             redoButton.draw();
 
-            if (localGame.state != LocalGameState::PLAYING) {
-                nextRoundButton.draw();
-            }
+            nextRoundButton.draw();
 
             scoreBoard.draw();
             winLossDeclare.draw();
@@ -76,8 +78,7 @@ int main() {
                 } else if (redoButton.isToggled(mousePosition)) {
                     buttonClicked = true;
                     board.redo();
-                } else if (localGame.state != LocalGameState::PLAYING
-                           && nextRoundButton.isToggled(mousePosition)) {
+                } else if (nextRoundButton.isToggled(mousePosition)) {
                     buttonClicked = true;
                     globalGame.state = GlobalGameState::PLAYING;
                     board.clear();

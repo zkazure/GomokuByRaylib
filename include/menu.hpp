@@ -12,11 +12,13 @@ private:
     float width;
     float height;
     Vector2 leftTop;
+    bool enabled = true;
 
 public:
     Button(Vector2 p, std::string i, int f);
     void draw() override;
     bool isToggled(Vector2 point) const;
+    void setEnabled(bool value);
 };
 
 
