@@ -191,9 +191,9 @@ bool Board::createPiece(Vector2 position, PieceType type) {
     return createPiece(pos2coor(position), type);
 }
 
-PieceType Board::undo() {
+void Board::undo() {
     if (localGame->moveHistory.empty()) {
-        return PieceType::PIECE_EMPTY;
+        return;
     }
 
     Move lastMove = localGame->moveHistory.top();
@@ -223,12 +223,11 @@ PieceType Board::undo() {
     localGame->state = LocalGameState::PLAYING;
     globalGame->state = GlobalGameState::PLAYING;
 
-    return type;
 }
 
-PieceType Board::redo() {
+void Board::redo() {
     if (localGame->rmoveHistory.empty()) {
-        return PieceType::PIECE_EMPTY;
+        return;
     }
 
     const Move move = localGame->rmoveHistory.top();
@@ -253,7 +252,6 @@ PieceType Board::redo() {
         globalGame->state = GlobalGameState::PLAYING;
     }
 
-    return move.type;
 }
 
 void Board::clear() {
