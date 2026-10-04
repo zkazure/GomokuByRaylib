@@ -17,9 +17,10 @@ int main() {
 
     Player *currPlayer = &localGame.player;
 
-    Button saveGameButton({700, 400}, "SAVE GAME", 14);
-    Button loadGameButton({700, 450}, "LOAD GAME", 14);
-    Button nextRoundButton({700, 500}, "NEW ROUND", 14);
+    Button undoButton({700, 355}, "UNDO", 14);
+    Button saveGameButton({700, 405}, "SAVE GAME", 14);
+    Button loadGameButton({700, 455}, "LOAD GAME", 14);
+    Button nextRoundButton({700, 505}, "NEW ROUND", 14);
     ScoreBoard scoreBoard({650, 150}, &globalGame);
     WinLossDeclare winLossDeclare({650, 215}, &localGame);
 
@@ -40,6 +41,7 @@ int main() {
 
             saveGameButton.draw();
             loadGameButton.draw();
+            undoButton.draw();
 
             if (localGame.state != LocalGameState::PLAYING) {
                 nextRoundButton.draw();
@@ -47,20 +49,18 @@ int main() {
 
             scoreBoard.draw();
             winLossDeclare.draw();
-            DrawText("CONTROLS", 640, 260, 10, UiPalette::muted);
-            DrawRectangleLines(640, 278, 120, 36, UiPalette::ink);
-            DrawRectangle(640, 278, 3, 36, UiPalette::accent);
-            DrawText("Z", 651, 286, 18, UiPalette::accent);
-            DrawText("UNDO", 676, 289, 12, UiPalette::ink);
         }
         EndDrawing();
 
         {
+            bool buttonClicked = false;
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                 Vector2 mousePosition = GetMousePosition();
                 if (saveGameButton.isToggled(mousePosition)) {
+                    buttonClicked = true;
                     localGame.saveToFile("gomoku.save");
                 } else if (loadGameButton.isToggled(mousePosition)) {
+                    buttonClicked = true;
                     if (localGame.loadFromFile("gomoku.save")) {
                         board.syncPiecesFromLocalGame();
                         globalGame.state =
@@ -68,18 +68,22 @@ int main() {
                             ? GlobalGameState::PLAYING
                             : GlobalGameState::GAMEOVER;
                     }
+                } else if (undoButton.isToggled(mousePosition)) {
+                    buttonClicked = true;
+                    board.regret();
                 } else if (localGame.state != LocalGameState::PLAYING
                            && nextRoundButton.isToggled(mousePosition)) {
+                    buttonClicked = true;
                     globalGame.state = GlobalGameState::PLAYING;
                     board.clear();
                 }
             }
 
-            if (IsKeyPressed(KEY_Z)) {
-                board.regret();
+            if (globalGame.state == GlobalGameState::GAMEOVER) {
+                continue;
             }
 
-            if (globalGame.state == GlobalGameState::GAMEOVER) {
+            if (buttonClicked) {
                 continue;
             }
         }
