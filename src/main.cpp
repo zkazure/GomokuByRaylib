@@ -17,10 +17,10 @@ int main() {
 
     Player *currPlayer = &localGame.player;
 
-    Button undoButton({700, 355}, "UNDO", 14);
-    Button redoButton({700, 395}, "REDO", 14);
-    Button saveGameButton({700, 435}, "SAVE GAME", 14);
-    Button loadGameButton({700, 475}, "LOAD GAME", 14);
+    Button undoButton({700, 325}, "UNDO", 14);
+    Button redoButton({700, 370}, "REDO", 14);
+    Button saveGameButton({700, 415}, "SAVE GAME", 14);
+    Button loadGameButton({700, 460}, "LOAD GAME", 14);
     Button nextRoundButton({700, 505}, "NEW ROUND", 14);
     ScoreBoard scoreBoard({650, 150}, &globalGame);
     WinLossDeclare winLossDeclare({650, 215}, &localGame);
