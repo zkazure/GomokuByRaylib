@@ -18,8 +18,9 @@ int main() {
     Player *currPlayer = &localGame.player;
 
     Button undoButton({700, 355}, "UNDO", 14);
-    Button saveGameButton({700, 405}, "SAVE GAME", 14);
-    Button loadGameButton({700, 455}, "LOAD GAME", 14);
+    Button redoButton({700, 395}, "REDO", 14);
+    Button saveGameButton({700, 435}, "SAVE GAME", 14);
+    Button loadGameButton({700, 475}, "LOAD GAME", 14);
     Button nextRoundButton({700, 505}, "NEW ROUND", 14);
     ScoreBoard scoreBoard({650, 150}, &globalGame);
     WinLossDeclare winLossDeclare({650, 215}, &localGame);
@@ -42,6 +43,7 @@ int main() {
             saveGameButton.draw();
             loadGameButton.draw();
             undoButton.draw();
+            redoButton.draw();
 
             if (localGame.state != LocalGameState::PLAYING) {
                 nextRoundButton.draw();
@@ -71,6 +73,9 @@ int main() {
                 } else if (undoButton.isToggled(mousePosition)) {
                     buttonClicked = true;
                     board.regret();
+                } else if (redoButton.isToggled(mousePosition)) {
+                    buttonClicked = true;
+                    board.redo();
                 } else if (localGame.state != LocalGameState::PLAYING
                            && nextRoundButton.isToggled(mousePosition)) {
                     buttonClicked = true;

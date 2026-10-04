@@ -36,6 +36,7 @@ public:
     Player player = Player(PieceType::PIECE_BLACK);
     std::vector<std::vector<PieceType>> boardState;
     std::stack<Move> moveHistory;
+    std::stack<Move> rmoveHistory;
 
 public:
     LocalGame();

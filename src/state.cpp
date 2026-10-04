@@ -38,6 +38,9 @@ bool LocalGame::make1Move(Coordinate coor, PieceType type) {
 
     boardState[coor.first][coor.second] = type;
     moveHistory.push(Move(coor.first, coor.second, type));
+    while (!rmoveHistory.empty()) {
+        rmoveHistory.pop();
+    }
 
     nextTurn();
 
@@ -194,6 +197,9 @@ void LocalGame::clear() {
     while (!moveHistory.empty()) {
         moveHistory.pop();
     }
+    while (!rmoveHistory.empty()) {
+        rmoveHistory.pop();
+    }
 
     player.playing = PieceType::PIECE_BLACK;
 }
@@ -228,6 +234,19 @@ bool LocalGame::saveToFile(const std::string& path) const {
     while (!history.empty()) {
         moves.push_back(history.top());
         history.pop();
+    }
+
+    file << moves.size() << '\n';
+    for (auto move = moves.rbegin(); move != moves.rend(); ++move) {
+        file << move->row << ' ' << move->col << ' '
+             << static_cast<int>(move->type) << '\n';
+    }
+
+    std::stack<Move> redoHistory = rmoveHistory;
+    moves.clear();
+    while (!redoHistory.empty()) {
+        moves.push_back(redoHistory.top());
+        redoHistory.pop();
     }
 
     file << moves.size() << '\n';
@@ -272,10 +291,24 @@ bool LocalGame::loadFromFile(const std::string& path) {
         loadedHistory.push(Move(row, col, static_cast<PieceType>(pieceType)));
     }
 
+    std::stack<Move> loadedRedoHistory;
+    std::size_t redoMoveCount = 0;
+    if (file >> redoMoveCount) {
+        for (std::size_t i = 0; i < redoMoveCount; ++i) {
+            int row = 0;
+            int col = 0;
+            int pieceType = 0;
+            file >> row >> col >> pieceType;
+            loadedRedoHistory.push(
+                Move(row, col, static_cast<PieceType>(pieceType)));
+        }
+    }
+
     boardSize = loadedBoardSize;
     state = static_cast<LocalGameState>(loadedState);
     player.playing = static_cast<PieceType>(loadedPlayer);
     boardState = std::move(loadedBoard);
     moveHistory = std::move(loadedHistory);
+    rmoveHistory = std::move(loadedRedoHistory);
     return true;
 }

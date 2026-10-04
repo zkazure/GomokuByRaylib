@@ -198,6 +198,7 @@ PieceType Board::regret() {
 
     Move lastMove = localGame->moveHistory.top();
     localGame->moveHistory.pop();
+    localGame->rmoveHistory.push(lastMove);
 
     Piece*& lastPiece = pieces[lastMove.row][lastMove.col];
     PieceType type = lastPiece->getType();
@@ -223,6 +224,36 @@ PieceType Board::regret() {
     globalGame->state = GlobalGameState::PLAYING;
 
     return type;
+}
+
+PieceType Board::redo() {
+    if (localGame->rmoveHistory.empty()) {
+        return PieceType::PIECE_EMPTY;
+    }
+
+    const Move move = localGame->rmoveHistory.top();
+    localGame->rmoveHistory.pop();
+
+    localGame->boardState[move.row][move.col] = move.type;
+    localGame->moveHistory.push(move);
+    pieces[move.row][move.col] = new Piece(this, coor2pos({move.row, move.col}),
+                                           move.type);
+    localGame->player.playing = move.type;
+    localGame->nextTurn();
+
+    localGame->state = LocalGameState::PLAYING;
+    localGame->checkOutcome();
+    if (localGame->state == LocalGameState::BLACK_WIN) {
+        globalGame->state = GlobalGameState::GAMEOVER;
+        globalGame->score.first += 1;
+    } else if (localGame->state == LocalGameState::WHITE_WIN) {
+        globalGame->state = GlobalGameState::GAMEOVER;
+        globalGame->score.second += 1;
+    } else {
+        globalGame->state = GlobalGameState::PLAYING;
+    }
+
+    return move.type;
 }
 
 void Board::clear() {
