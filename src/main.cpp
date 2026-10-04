@@ -41,8 +41,6 @@ int main() {
             board.draw();
 
             DrawText("GOMOKU", 650, 75, 24, UiPalette::ink);
-            DrawText("FIVE IN A ROW", 651, 100, 10, UiPalette::muted);
-            DrawLine(650, 115, 750, 115, UiPalette::ink);
 
             saveGameButton.draw();
             loadGameButton.draw();
