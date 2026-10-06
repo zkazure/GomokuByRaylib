@@ -61,7 +61,7 @@ bear --output build/compile_commands.json -- make
 - player：当前下棋的玩家
 - boardState：棋盘上棋子的分布 (row, col).
 - moveHistory: 上一步棋的历史
-- rmoveHostory: 悔棋的历史
+- rmoveHistory: 悔棋的历史
 
 
 - Make1Move: 改变 boardState、moveHistory.
@@ -77,6 +77,8 @@ bear --output build/compile_commands.json -- make
   boardState
   moveHistory.size()
   moveHistory
+  rmoveHistory.size()
+  rmoveHistory
   #+end_example
 - loadFromFile
 
