@@ -164,8 +164,8 @@ Vector2 Board::coor2pos(Coordinate coor) const {
 
 bool Board::createPiece(Coordinate coor, PieceType type) {
     const int boardSize = localGame->boardSize;
-    if (coor.first < 0 || coor.first > boardSize + 1
-        || coor.second < 0 || coor.second > boardSize + 1) {
+    if (coor.first <= 0 || coor.first >= boardSize + 1
+        || coor.second <= 0 || coor.second >= boardSize + 1) {
         return false;
     }
 
