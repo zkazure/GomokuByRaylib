@@ -128,7 +128,7 @@ Everything which is visible in game is an ~object~.
 
 - info: 按键上的字体
 - fontSize
-- width：根据 info 长度调整
+- width
 - height：根据 fontSize 调整
 - leftTop：按键左上角屏幕坐标
 
