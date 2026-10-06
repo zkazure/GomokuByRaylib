@@ -15,5 +15,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 		-Iexternal/raylib/src \
 		-o $@
 
+-include $(OBJS:.o=.d)
+
 clean:
 	rm -rf build/
