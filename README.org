@@ -54,6 +54,7 @@ bear --output build/compile_commands.json -- make
 - type: 操控者类型（human / ai），随存档保存与恢复。
 - score: 这一方自己的胜局数。归棋手所有，不再是"黑白一对整数"。
 - name: 棋手名字，默认 ~player1~ / ~player2~，随存档保存与恢复。
+  目前没有界面改名，要改就直接改存档最后一行（名字不含空白字符）。
 
 - isAI: 是否由 AI 操控，等价于 ~type == PlayerType::AI~。
 - 构造函数为 ~explicit~，避免 ~PieceType~ 被隐式转换成 ~Player~ 后悄悄丢掉操控者类型。
