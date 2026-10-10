@@ -1,7 +1,7 @@
 #include "ai.hpp"
 #include "game.hpp"
 
-constexpr float AI_THINK_DELAY = 0.35f;
+constexpr float AI_THINK_DELAY = 0.50f;
 
 Game::Game(Vector2 screenLayout)
     : globalGame(screenLayout, GlobalGameState::INITIAL),
