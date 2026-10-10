@@ -17,15 +17,15 @@ enum class PatternLevel {
 
 static int levelScore(PatternLevel level) {
     switch (level) {
-        case PatternLevel::FIVE: return 1000000;
-        case PatternLevel::OPEN_FOUR: return 100000;
-        case PatternLevel::FOUR: return 10000;
-        case PatternLevel::OPEN_THREE: return 8000;
-        case PatternLevel::THREE: return 800;
-        case PatternLevel::OPEN_TWO: return 400;
-        case PatternLevel::TWO: return 40;
-        case PatternLevel::ONE: return 4;
-        case PatternLevel::NONE: return 0;
+    case PatternLevel::FIVE: return 1000000;
+    case PatternLevel::OPEN_FOUR: return 100000;
+    case PatternLevel::FOUR: return 10000;
+    case PatternLevel::OPEN_THREE: return 8000;
+    case PatternLevel::THREE: return 800;
+    case PatternLevel::OPEN_TWO: return 400;
+    case PatternLevel::TWO: return 40;
+    case PatternLevel::ONE: return 4;
+    case PatternLevel::NONE: return 0;
     }
 
     return 0;
@@ -257,12 +257,12 @@ Coordinate AI::chooseMove(const LocalGame& game) {
 
     Coordinate best = candidates[0];
     int bestScore = ATTACK_WEIGHT * pointScore(game, best.first, best.second, me)
-                  + DEFENSE_WEIGHT * pointScore(game, best.first, best.second, opponent);
+        + DEFENSE_WEIGHT * pointScore(game, best.first, best.second, opponent);
 
     for (int i = 1; i < count; ++i) {
         const Coordinate move = candidates[i];
         const int score = ATTACK_WEIGHT * pointScore(game, move.first, move.second, me)
-                        + DEFENSE_WEIGHT * pointScore(game, move.first, move.second, opponent);
+            + DEFENSE_WEIGHT * pointScore(game, move.first, move.second, opponent);
         if (isBetterMove(game, score, move, bestScore, best)) {
             best = move;
             bestScore = score;
