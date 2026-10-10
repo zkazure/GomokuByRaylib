@@ -66,6 +66,7 @@ public:
     int getScore(PieceType color) const;
     void addScore(PieceType color);
     void removeScore(PieceType color);
+    void resetScores();
     std::string getName(PieceType color) const;
     void setName(PieceType color, const std::string& name);
     bool isFiveAt(int row, int col, PieceType type) const;

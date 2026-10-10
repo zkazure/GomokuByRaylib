@@ -213,15 +213,19 @@ Everything which is visible in game is an ~object~.
 游戏本体，持有本局的全部对象，把主循环拆成更新与绘制两个阶段。
 
 - globalGame / localGame / board：本局的状态与棋盘。
-- 七个 Button：左侧两个切换黑白双方的操控者，右侧五个是对局操作。
+- 八个 Button：左侧两个切换黑白双方的操控者，右侧六个是对局操作。
 - ScoreBoard、WinLossDeclare：右侧面板。
+- 右侧按钮从上到下：UNDO、REDO、SAVE GAME、LOAD GAME、NEW ROUND、NEW GAME。
+  NEW ROUND 只清棋盘、**保留比分**（一局结束后的续局）；NEW GAME 连比分一起归零（开新的一场）。
+  两者都保留棋手的操控者类型与名字——那是玩家设置，不属于这一局的状态。NEW GAME 始终可点。
 - aiWaitTimer：AI 思考计时，进入 AI 回合后累计帧时间。
 - 成员声明顺序即构造顺序：globalGame、localGame 先于 board（board 要用 screenLayout 与 boardSize
   算 cellWidth），scoreBoard / winLossDeclare 持有二者指针，排在最后。
 
 - shouldClose：窗口是否被要求关闭。
 - update：一帧的逻辑，不碰任何绘制。依次做
-  + 刷新按钮启用态（undo / redo 看历史，NEW ROUND 看本局是否结束，~WHITE: xxx~ 看白方操控者）
+  + 刷新按钮启用态与文案（undo / redo 看历史，NEW ROUND 看本局是否结束，NEW GAME 始终可点，
+    ~BLACK: xxx~ / ~WHITE: xxx~ 看各自操控者）
   + 处理按钮点击；有按钮吃掉这次点击就到此为止
   + 全局状态为 GAMEOVER 时到此为止
   + 判定胜负并计分

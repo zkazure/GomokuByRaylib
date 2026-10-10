@@ -222,6 +222,11 @@ void LocalGame::removeScore(PieceType color) {
     }
 }
 
+void LocalGame::resetScores() {
+    blackPlayer.score = 0;
+    whitePlayer.score = 0;
+}
+
 std::string LocalGame::getName(PieceType color) const {
     return playerOf(color).name;
 }

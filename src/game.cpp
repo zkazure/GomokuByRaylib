@@ -15,6 +15,7 @@ Game::Game(Vector2 screenLayout)
       saveGameButton({700, 415}, "SAVE GAME", 14),
       loadGameButton({700, 460}, "LOAD GAME", 14),
       nextRoundButton({700, 505}, "NEW ROUND", 14),
+      newGameButton({700, 550}, "NEW GAME", 14),
       scoreBoard({650, 150}, &localGame),
       winLossDeclare({650, 215}, &localGame) {}
 
@@ -49,6 +50,7 @@ void Game::render() {
     undoButton.draw();
     redoButton.draw();
     nextRoundButton.draw();
+    newGameButton.draw();
 
     scoreBoard.draw();
     winLossDeclare.draw();
@@ -113,6 +115,13 @@ bool Game::handleButtonClicks() {
     if (nextRoundButton.isToggled(mousePosition)) {
         globalGame.state = GlobalGameState::PLAYING;
         board.clear();
+        return true;
+    }
+
+    if (newGameButton.isToggled(mousePosition)) {
+        globalGame.state = GlobalGameState::PLAYING;
+        board.clear();
+        localGame.resetScores();
         return true;
     }
 

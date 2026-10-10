@@ -25,6 +25,7 @@ private:
     Button saveGameButton;
     Button loadGameButton;
     Button nextRoundButton;
+    Button newGameButton;
     ScoreBoard scoreBoard;
     WinLossDeclare winLossDeclare;
     float aiWaitTimer = 0.0f;
