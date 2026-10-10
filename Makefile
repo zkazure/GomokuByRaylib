@@ -10,7 +10,7 @@ $(BUILD_DIR)/gomoku: $(OBJS)
 	g++ $(OBJS) $(RAYLIB) -lX11 -o $@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	g++ -c $< \
+	g++ -Wall -c $< \
 		-MMD -MP -I$(INC_DIR) \
 		-Iexternal/raylib/src \
 		-o $@
