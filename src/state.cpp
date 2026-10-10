@@ -113,12 +113,15 @@ void LocalGame::checkOutcome() {
         return;
     }
 
-    if (!isFiveAt(lastMove.row, lastMove.col, lastMove.type)) {
+    if (isFiveAt(lastMove.row, lastMove.col, lastMove.type)) {
+        state = (lastMove.type == PieceType::PIECE_BLACK)
+              ? LocalGameState::BLACK_WIN : LocalGameState::WHITE_WIN;
         return;
     }
 
-    state = (lastMove.type == PieceType::PIECE_BLACK)
-          ? LocalGameState::BLACK_WIN : LocalGameState::WHITE_WIN;
+    if (isBoardFull()) {
+        state = LocalGameState::DRAW;
+    }
 }
 
 void LocalGame::clear() {
@@ -178,6 +181,10 @@ PieceType LocalGame::getCurrentPlaying() const {
 
 bool LocalGame::isBoardEmpty() const {
     return moveHistory.empty();
+}
+
+bool LocalGame::isBoardFull() const {
+    return static_cast<int>(moveHistory.size()) >= boardSize * boardSize;
 }
 
 Player& LocalGame::playerOf(PieceType color) {

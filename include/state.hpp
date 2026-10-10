@@ -60,6 +60,7 @@ public:
     PieceType getPiece(int row, int col) const;
     PieceType getCurrentPlaying() const;
     bool isBoardEmpty() const;
+    bool isBoardFull() const;
     bool isPlayerAI(PieceType color) const;
     bool isCurrentPlayerAI() const;
     void setPlayerType(PieceType color, PlayerType type);

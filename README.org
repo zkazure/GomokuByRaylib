@@ -28,6 +28,7 @@ bear --output build/compile_commands.json -- make
   + playing
   + black_win
   + white_win
+  + draw
 - PieceType:
   + empty
   + black
@@ -62,7 +63,7 @@ bear --output build/compile_commands.json -- make
 
 - boardSize (default 15): standard board is 15 x 15.
   which determines how many rows and columns.
-- state: playing, black_win, white_win.
+- state: playing, black_win, white_win, draw。
 - blackPlayer / whitePlayer：两个棋手，各自带持子与操控者类型。
 - currentPlayer：行棋方，指向 blackPlayer 或 whitePlayer 之一。
 - boardState：棋盘上棋子的分布 (row, col).
@@ -101,7 +102,9 @@ bear --output build/compile_commands.json -- make
     试算共用这一个方法，调用者不需要拿到 ~boardState~。
   + 该点已是对方向棋子、越界、或 ~type~ 为 empty 时返回 false。
   + 只认连续型：~3,4,5,6,8~ 这种中间断一格的五子不算胜。
-- checkOutcome：取最近一手，交给 ~isFiveAt~ 判定胜负。由 ~Game::update~ 每帧调用。
+- checkOutcome：取最近一手，先交给 ~isFiveAt~ 判成五，成五即置胜并返回；否则若 ~isBoardFull~
+  为真则置平局。成五优先于平局，所以满盘上的制胜一手仍算胜。由 ~Game::update~ 每帧调用。
+- isBoardFull：棋盘是否已满，判定依据是 ~moveHistory.size() >= boardSize * boardSize~。
 - isPlayerAI(color)：某一方是否由 AI 操控。
 - isCurrentPlayerAI：行棋方是否由 AI 操控。
 - setPlayerType(color, type)：把某一方交给人或 AI，用于右侧面板的 ~WHITE: HUMAN / WHITE: AI~ 按钮。
@@ -190,7 +193,8 @@ Everything which is visible in game is an ~object~.
 
 **** WinLossDeclare
 
-- localGame: 获取本局胜负
+- localGame: 获取本局胜负。黑白胜分别显示 ~Black wins!~ / ~White wins!~，平局显示 ~Draw!~；
+  对局未结束时留空。文字用强调色，仅在未结束时是普通墨色。
 
 ** Game
 
@@ -221,7 +225,8 @@ Everything which is visible in game is an ~object~.
 - 人类落子有门禁：轮到 AI 时忽略鼠标，人类无法替 AI 落子，也不会与 AI 在同一帧各下一手。
 - 悔棋在 PVE 下一次撤到"轮到人类"为止：撤掉 AI 的应手后，若行棋方仍是 AI 就再撤一手。
   所以按一次 UNDO 通常会撤掉两手，并且 AI 不会立刻重下。
-- 胜负与计分仍由 ~update~ 判：AI 成五时 ~localGame.getState()~ 为 WHITE_WIN，白方加分。
+- 胜负与计分仍由 ~update~ 判：AI 成五时 ~localGame.getState()~ 为 WHITE_WIN，白方加分；
+  平局只把全局状态置为 GAMEOVER，双方都不加分。
 
 ~main~ 只负责窗口与循环骨架：
 

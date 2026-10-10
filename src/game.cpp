@@ -123,7 +123,7 @@ void Game::handleTurn() {
         globalGame.state = GlobalGameState::GAMEOVER;
         if (localGame.getState() == LocalGameState::BLACK_WIN) {
             globalGame.score.first += 1;
-        } else {
+        } else if (localGame.getState() == LocalGameState::WHITE_WIN) {
             globalGame.score.second += 1;
         }
     }

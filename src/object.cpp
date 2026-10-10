@@ -230,6 +230,8 @@ void Board::redo() {
     } else if (localGame->getState() == LocalGameState::WHITE_WIN) {
         globalGame->state = GlobalGameState::GAMEOVER;
         globalGame->score.second += 1;
+    } else if (localGame->getState() == LocalGameState::DRAW) {
+        globalGame->state = GlobalGameState::GAMEOVER;
     } else {
         globalGame->state = GlobalGameState::PLAYING;
     }

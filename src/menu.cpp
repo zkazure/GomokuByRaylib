@@ -70,6 +70,8 @@ void WinLossDeclare::draw() {
         declaration = "Black wins!";
     } else if (localGame->getState() == LocalGameState::WHITE_WIN) {
         declaration = "White wins!";
+    } else if (localGame->getState() == LocalGameState::DRAW) {
+        declaration = "Draw!";
     }
 
     DrawText(declaration, position.x, position.y, 16,
