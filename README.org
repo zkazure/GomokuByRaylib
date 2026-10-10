@@ -21,7 +21,7 @@ bear --output build/compile_commands.json -- make
 
 ** Type
 - GlobalGameState
-  + initial
+  + initial：未开局，只有 ~START GAME~ 与两个操控者切换按钮可点
   + playing
   + gameover
 - LocalGameState
@@ -222,6 +222,9 @@ Everything which is visible in game is an ~object~.
 - isToggled: 检测当前按钮是否被按下。禁用状态下恒为 false，所以禁用按钮也点不动。
 - setEnabled: 设置启用状态；禁用时画成灰色。
 
+按钮的**启用态同时就是点击门禁**：禁用按钮的 ~isToggled()~ 恒为 false，所以"哪个阶段只能点哪几个
+按钮"全部由 ~Game::updateButtons()~ 一处决定，点击处理里不再另写一份阶段判断。
+
 **** ScoreBoard
 
 - localGame 取两个棋手的名字、操控者类型与分数，一行画一个棋手：石头标记 + `名字  类型` + 分数。
@@ -236,39 +239,47 @@ Everything which is visible in game is an ~object~.
 游戏本体，持有本局的全部对象，把主循环拆成更新与绘制两个阶段。
 
 - globalGame / localGame / board：本局的状态与棋盘。
-- 八个 Button：左侧两个切换黑白双方的操控者，右侧六个是对局操作。
-- ScoreBoard、WinLossDeclare：右侧面板。
-- 右侧按钮从上到下：UNDO、REDO、SAVE GAME、LOAD GAME、NEW ROUND、NEW GAME。
-  NEW ROUND 只清棋盘、**保留比分**（一局结束后的续局）；NEW GAME 连比分一起归零（开新的一场）。
-  两者都保留棋手的操控者类型与名字——那是玩家设置，不属于这一局的状态。NEW GAME 始终可点。
+- 九个 Button，分两列：左列是操控者切换与存档，右列是开局与对局操作。
+- ScoreBoard、WinLossDeclare：右侧面板（棋盘右边那一栏，x=650）。
+- 左列（x=87）从上到下：SAVE GAME、LOAD GAME、BLACK: SWITCH、WHITE: SWITCH。
+- 右列（x=700）从上到下：START GAME、UNDO、REDO、NEW ROUND、NEW GAME。
+  两列的列内间距都是 45px（按钮高 40 + 间隔 5），下沿都压在棋盘底边 y=525 上。
+- START GAME 把全局状态从 INITIAL 推到 PLAYING，是唯一的开局入口。
+- NEW ROUND 只清棋盘、**保留比分**（一局结束后的续局）；NEW GAME 连比分一起归零（开新的一场）。
+  两者都保留棋手的操控者类型与名字——那是玩家设置，不属于这一局的状态。
 - aiWaitTimer：AI 思考计时，进入 AI 回合后累计帧时间。
 - 成员声明顺序即构造顺序：globalGame、localGame 先于 board（board 要用 screenLayout 与 boardSize
   算 cellWidth），scoreBoard / winLossDeclare 持有二者指针，排在最后。
 
 - shouldClose：窗口是否被要求关闭。
 - update：一帧的逻辑，不碰任何绘制。依次做
-  + 刷新按钮启用态（undo / redo 看历史，NEW ROUND 看本局是否结束，NEW GAME 始终可点）。
+  + 刷新按钮启用态。~INITIAL~（未开局）时只放开 START GAME 与两个操控者切换按钮；
+    点过 START GAME 之后反过来——START GAME 与两个切换按钮变灰，其余按钮按各自条件放开
+    （undo / redo 看历史，NEW ROUND 看本局是否结束，SAVE / LOAD / NEW GAME 开局后始终可点）。
     两个切换按钮的文案是固定的 ~BLACK: SWITCH~ / ~WHITE: SWITCH~，当前是谁在操控由记分板显示
-  + 处理按钮点击；有按钮吃掉这次点击就到此为止
-  + 全局状态为 GAMEOVER 时到此为止
+  + 处理按钮点击；有按钮吃掉这次点击就到此为止。未开局时点不到别的按钮是"启用态"的自然结果，
+    这里不重复判断阶段
+  + 全局状态不是 PLAYING 时到此为止（INITIAL 等开局，GAMEOVER 等 NEW ROUND / NEW GAME）
   + 判定胜负并计分
   + 人类点击落子（轮到 AI 时忽略鼠标）
-  + AI 回合：累计 ~aiWaitTimer~，满 ~AI_THINK_DELAY~（0.35s）才落子；不在 AI 回合时清零
+  + AI 回合：累计 ~aiWaitTimer~，满 ~AI_THINK_DELAY~（0.5s）才落子；不在 AI 回合时清零
 - playAIMove：问 ~AI::chooseMove~ 要一步，走 ~board.createPiece~ 落子；万一非法就线性找一个空点兜底。
-- render：BeginDrawing、画棋盘与右侧面板、EndDrawing。不画"轮到谁"的提示——行棋方由棋盘上
+- render：BeginDrawing、画棋盘、两列按钮与右侧面板、EndDrawing。不画"轮到谁"的提示——行棋方由棋盘上
   最后一手的标记与记分板那一行体现，AI 是不是在思考看它下一手落下来即可。
 
 人机对弈的几条约定：
 
-- 黑白双方的操控者各由一个按钮切换（左侧的 ~BLACK: SWITCH~ / ~WHITE: SWITCH~，走
-  ~localGame.setPlayerType~），对局中也可切，点击即时生效。
+- 黑白双方的操控者各由一个按钮切换（左列的 ~BLACK: SWITCH~ / ~WHITE: SWITCH~，走
+  ~localGame.setPlayerType~），**只在开局前（INITIAL）可切**，点击即时生效；点过 START GAME
+  之后两个按钮变灰，本场的对手就此定下。~INITIAL~ 只在进程启动时出现，所以想换对手要重开程序。
 - 双方都是 AI 时对局自己走下去，直到分出胜负或平局。~AI::chooseMove~ 对空盘返回天元，
   所以黑方是 AI 时也能先行，不需要人类先摆一手。
 - 人类落子有门禁：轮到 AI 时忽略鼠标，人类无法替 AI 落子，也不会与 AI 在同一帧各下一手。
 - UNDO 一律**只撤一手**，不看对方是人还是 AI。撤销后行棋方回到被撤那一手的持有者
   （`undoMove()` 的行为），所以撤掉的若是 AI 的应手，下一步仍是 AI。
-- 于是 PVE 下按 UNDO 常常"看不出变化"：AI 会在 0.35s 后把这一手重新下回来（同一局面决策是
-  确定的）。想真正撤掉自己那一手，先把 AI 那侧切回 `HUMAN` 再按 UNDO。
+- 于是 PVE 下按 UNDO 常常"看不出变化"：AI 会在 0.5s 后把这一手重新下回来（同一局面决策是
+  确定的）。对局中已经改不了操控者（见上条），想真正撤掉自己那一手，只能在开局前就把 AI 那侧
+  设成 `HUMAN`。
 - 胜负与计分仍由 ~update~ 判：谁成五就给**那个棋手**加分（~localGame.addScore~），
   悔棋时给对应棋手回滚（~removeScore~）；平局只把全局状态置为 GAMEOVER，双方都不加分。
 

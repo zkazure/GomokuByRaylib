@@ -69,7 +69,7 @@ void Game::updateButtons() {
     whiteTypeButton.setEnabled(gameWaiting);
 
     saveGameButton.setEnabled(!gameWaiting);
-    loadGameButton.setEnabled(!gameWaiting);
+    loadGameButton.setEnabled(gameWaiting);
     newGameButton.setEnabled(!gameWaiting);
     undoButton.setEnabled(!gameWaiting && localGame.canUndo());
     redoButton.setEnabled(!gameWaiting && localGame.canRedo());
