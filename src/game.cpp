@@ -1,4 +1,5 @@
 #include "ai.hpp"
+#include "type.hpp"
 #include "game.hpp"
 
 constexpr float AI_THINK_DELAY = 0.50f;
@@ -8,6 +9,7 @@ Game::Game(Vector2 screenLayout)
       localGame(),
       board(&globalGame, &localGame,
             {screenLayout.x / 2, screenLayout.y / 2}),
+      startButton({50, 50}, "START GAME", 12),
       blackTypeButton({87, 460}, "BLACK: SWITCH", 12),
       whiteTypeButton({87, 505}, "WHITE: SWITCH", 12),
       undoButton({700, 280}, "UNDO", 14),
@@ -28,7 +30,7 @@ void Game::update() {
 
     const bool buttonClicked = handleButtonClicks();
 
-    if (globalGame.state == GlobalGameState::GAMEOVER || buttonClicked) {
+    if (globalGame.state != GlobalGameState::PLAYING || buttonClicked) {
         return;
     }
 
@@ -43,6 +45,7 @@ void Game::render() {
 
     DrawText("GOMOKU", 650, 75, 24, UiPalette::foreground);
 
+    startButton.draw();
     blackTypeButton.draw();
     whiteTypeButton.draw();
     saveGameButton.draw();
@@ -59,9 +62,18 @@ void Game::render() {
 }
 
 void Game::updateButtons() {
-    undoButton.setEnabled(localGame.canUndo());
-    redoButton.setEnabled(localGame.canRedo());
-    nextRoundButton.setEnabled(!localGame.isPlaying());
+    const bool gameWaiting = globalGame.state == GlobalGameState::INITIAL;
+
+    startButton.setEnabled(gameWaiting);
+    blackTypeButton.setEnabled(gameWaiting);
+    whiteTypeButton.setEnabled(gameWaiting);
+
+    saveGameButton.setEnabled(!gameWaiting);
+    loadGameButton.setEnabled(!gameWaiting);
+    newGameButton.setEnabled(!gameWaiting);
+    undoButton.setEnabled(!gameWaiting && localGame.canUndo());
+    redoButton.setEnabled(!gameWaiting && localGame.canRedo());
+    nextRoundButton.setEnabled(!gameWaiting && !localGame.isPlaying());
 }
 
 void Game::togglePlayerType(PieceType color) {
@@ -75,6 +87,11 @@ bool Game::handleButtonClicks() {
     }
 
     const Vector2 mousePosition = GetMousePosition();
+
+    if (startButton.isToggled(mousePosition)) {
+        globalGame.state = GlobalGameState::PLAYING;
+        return true;
+    }
 
     if (saveGameButton.isToggled(mousePosition)) {
         localGame.saveToFile("gomoku.save");
@@ -107,7 +124,7 @@ bool Game::handleButtonClicks() {
     }
 
     if (newGameButton.isToggled(mousePosition)) {
-        globalGame.state = GlobalGameState::PLAYING;
+        globalGame.state = GlobalGameState::INITIAL;
         board.clear();
         localGame.resetScores();
         return true;

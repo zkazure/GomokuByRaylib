@@ -18,6 +18,7 @@ private:
     GlobalGame globalGame;
     LocalGame localGame;
     Board board;
+    Button startButton;
     Button blackTypeButton;
     Button whiteTypeButton;
     Button undoButton;
