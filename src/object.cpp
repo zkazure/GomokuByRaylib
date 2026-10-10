@@ -274,9 +274,9 @@ void Board::syncPiecesFromLocalGame() {
 Piece::Piece(const Board *b, Vector2 p, PieceType t) : Object(p), board(b), type(t) {}
 void Piece::draw() {
     if (type == PieceType::PIECE_BLACK) {
-        DrawCircleV(position, radius, BLACK);
+        DrawCircleV(position, radius, UiPalette::ink);
     } else {
-        DrawCircleV(position, radius, WHITE);
+        DrawCircleV(position, radius, UiPalette::panel);
     }
 }
 
