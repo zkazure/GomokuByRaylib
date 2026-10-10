@@ -32,6 +32,10 @@ void Button::setEnabled(bool value) {
     enabled = value;
 }
 
+void Button::setInfo(const std::string& value) {
+    info = value;
+}
+
 
 ScoreBoard::ScoreBoard(Vector2 p, const GlobalGame * gg)
     : Object(p), globalGame(gg) {}

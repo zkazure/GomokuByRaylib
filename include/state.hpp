@@ -60,7 +60,14 @@ public:
     PieceType getPiece(int row, int col) const;
     PieceType getCurrentPlaying() const;
     bool isBoardEmpty() const;
+    bool isPlayerAI(PieceType color) const;
+    bool isCurrentPlayerAI() const;
+    void setPlayerType(PieceType color, PlayerType type);
     bool isFiveAt(int row, int col, PieceType type) const;
     Move undoMove();
     Move redoMove();
+
+private:
+    Player& playerOf(PieceType color);
+    const Player& playerOf(PieceType color) const;
 };

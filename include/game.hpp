@@ -23,10 +23,13 @@ private:
     Button saveGameButton;
     Button loadGameButton;
     Button nextRoundButton;
+    Button whiteTypeButton;
     ScoreBoard scoreBoard;
     WinLossDeclare winLossDeclare;
+    float aiWaitTimer = 0.0f;
 
     void updateButtons();
     bool handleButtonClicks();
     void handleTurn();
+    void playAIMove();
 };

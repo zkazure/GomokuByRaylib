@@ -101,7 +101,10 @@ bear --output build/compile_commands.json -- make
     试算共用这一个方法，调用者不需要拿到 ~boardState~。
   + 该点已是对方向棋子、越界、或 ~type~ 为 empty 时返回 false。
   + 只认连续型：~3,4,5,6,8~ 这种中间断一格的五子不算胜。
-- checkOutcome：取最近一手，交给 ~isFiveAt~ 判定胜负。由 ~main~ 每帧调用。
+- checkOutcome：取最近一手，交给 ~isFiveAt~ 判定胜负。由 ~Game::update~ 每帧调用。
+- isPlayerAI(color)：某一方是否由 AI 操控。
+- isCurrentPlayerAI：行棋方是否由 AI 操控。
+- setPlayerType(color, type)：把某一方交给人或 AI，用于右侧面板的 ~WHITE: HUMAN / WHITE: AI~ 按钮。
 
 记账：
 
@@ -177,7 +180,9 @@ Everything which is visible in game is an ~object~.
 - leftTop：按键左上角屏幕坐标
 
 
-- isToggled: 检测当前按钮是否被按下
+- isToggled: 检测当前按钮是否被按下。禁用状态下恒为 false，所以禁用按钮也点不动。
+- setEnabled: 设置启用状态；禁用时画成灰色。
+- setInfo: 更换按钮上的文字，用于 ~WHITE: HUMAN / WHITE: AI~ 这种随状态变化的文案。
 
 **** ScoreBoard
 
@@ -192,18 +197,31 @@ Everything which is visible in game is an ~object~.
 游戏本体，持有本局的全部对象，把主循环拆成更新与绘制两个阶段。
 
 - globalGame / localGame / board：本局的状态与棋盘。
-- 五个 Button、ScoreBoard、WinLossDeclare：右侧面板。
+- 六个 Button、ScoreBoard、WinLossDeclare：右侧面板。
+- aiWaitTimer：AI 思考计时，进入 AI 回合后累计帧时间。
 - 成员声明顺序即构造顺序：globalGame、localGame 先于 board（board 要用 screenLayout 与 boardSize
   算 cellWidth），scoreBoard / winLossDeclare 持有二者指针，排在最后。
 
 - shouldClose：窗口是否被要求关闭。
 - update：一帧的逻辑，不碰任何绘制。依次做
-  + 刷新按钮启用态（undo / redo 看历史，NEW ROUND 看本局是否结束）
+  + 刷新按钮启用态（undo / redo 看历史，NEW ROUND 看本局是否结束，~WHITE: xxx~ 看白方操控者）
   + 处理按钮点击；有按钮吃掉这次点击就到此为止
   + 全局状态为 GAMEOVER 时到此为止
   + 判定胜负并计分
-  + 人类点击落子
-- render：BeginDrawing、画棋盘与右侧面板、EndDrawing。
+  + 人类点击落子（轮到 AI 时忽略鼠标）
+  + AI 回合：累计 ~aiWaitTimer~，满 ~AI_THINK_DELAY~（0.35s）才落子；不在 AI 回合时清零
+- playAIMove：问 ~AI::chooseMove~ 要一步，走 ~board.createPiece~ 落子；万一非法就线性找一个空点兜底。
+- render：BeginDrawing、画棋盘与右侧面板、EndDrawing。轮到 AI 且本局未结束时，在标题下方画
+  ~AI THINKING...~。
+
+人机对弈的几条约定：
+
+- 白方操控者由 ~WHITE: HUMAN / WHITE: AI~ 按钮切换（~localGame.setPlayerType~），对局中也可切，
+  点击即时生效。
+- 人类落子有门禁：轮到 AI 时忽略鼠标，人类无法替 AI 落子，也不会与 AI 在同一帧各下一手。
+- 悔棋在 PVE 下一次撤到"轮到人类"为止：撤掉 AI 的应手后，若行棋方仍是 AI 就再撤一手。
+  所以按一次 UNDO 通常会撤掉两手，并且 AI 不会立刻重下。
+- 胜负与计分仍由 ~update~ 判：AI 成五时 ~localGame.getState()~ 为 WHITE_WIN，白方加分。
 
 ~main~ 只负责窗口与循环骨架：
 
@@ -313,7 +331,7 @@ MVP: 双人交替下五子棋。
 - [X] gameState changing
 
 
-** bonus [2/6]
+** bonus [3/6]
 
 - [X] ui
   + [X] 悔棋提示
@@ -324,5 +342,5 @@ MVP: 双人交替下五子棋。
 - [X] 游戏存盘续玩
 - [ ] 游戏复盘
 - [ ] 游戏操作合理性
-- [ ] 人机对弈
+- [X] 人机对弈
 - [ ] 联网模式

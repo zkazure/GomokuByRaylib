@@ -141,7 +141,7 @@ void LocalGame::clear() {
 }
 
 void LocalGame::setCurrentPlayer(PieceType color) {
-    currentPlayer = (color == PieceType::PIECE_WHITE) ? &whitePlayer : &blackPlayer;
+    currentPlayer = &playerOf(color);
 }
 
 void LocalGame::nextTurn() {
@@ -178,6 +178,26 @@ PieceType LocalGame::getCurrentPlaying() const {
 
 bool LocalGame::isBoardEmpty() const {
     return moveHistory.empty();
+}
+
+Player& LocalGame::playerOf(PieceType color) {
+    return (color == PieceType::PIECE_WHITE) ? whitePlayer : blackPlayer;
+}
+
+const Player& LocalGame::playerOf(PieceType color) const {
+    return (color == PieceType::PIECE_WHITE) ? whitePlayer : blackPlayer;
+}
+
+bool LocalGame::isPlayerAI(PieceType color) const {
+    return playerOf(color).isAI();
+}
+
+bool LocalGame::isCurrentPlayerAI() const {
+    return currentPlayer->isAI();
+}
+
+void LocalGame::setPlayerType(PieceType color, PlayerType type) {
+    playerOf(color).type = type;
 }
 
 Move LocalGame::undoMove() {

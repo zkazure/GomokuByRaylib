@@ -1,4 +1,7 @@
+#include "ai.hpp"
 #include "game.hpp"
+
+constexpr float AI_THINK_DELAY = 0.35f;
 
 Game::Game(Vector2 screenLayout)
     : globalGame(screenLayout, GlobalGameState::INITIAL),
@@ -10,6 +13,7 @@ Game::Game(Vector2 screenLayout)
       saveGameButton({700, 415}, "SAVE GAME", 14),
       loadGameButton({700, 460}, "LOAD GAME", 14),
       nextRoundButton({700, 505}, "NEW ROUND", 14),
+      whiteTypeButton({700, 280}, "WHITE: HUMAN", 12),
       scoreBoard({650, 150}, &globalGame),
       winLossDeclare({650, 215}, &localGame) {}
 
@@ -37,6 +41,11 @@ void Game::render() {
 
     DrawText("GOMOKU", 650, 75, 24, UiPalette::ink);
 
+    if (localGame.isCurrentPlayerAI() && localGame.isPlaying()) {
+        DrawText("AI THINKING...", 650, 105, 12, UiPalette::muted);
+    }
+
+    whiteTypeButton.draw();
     saveGameButton.draw();
     loadGameButton.draw();
     undoButton.draw();
@@ -53,6 +62,8 @@ void Game::updateButtons() {
     undoButton.setEnabled(localGame.canUndo());
     redoButton.setEnabled(localGame.canRedo());
     nextRoundButton.setEnabled(!localGame.isPlaying());
+    whiteTypeButton.setInfo(localGame.isPlayerAI(PieceType::PIECE_WHITE) ? "WHITE: AI"
+                                                                       : "WHITE: HUMAN");
 }
 
 bool Game::handleButtonClicks() {
@@ -78,6 +89,9 @@ bool Game::handleButtonClicks() {
 
     if (undoButton.isToggled(mousePosition)) {
         board.undo();
+        while (localGame.isCurrentPlayerAI() && localGame.canUndo()) {
+            board.undo();
+        }
         return true;
     }
 
@@ -89,6 +103,14 @@ bool Game::handleButtonClicks() {
     if (nextRoundButton.isToggled(mousePosition)) {
         globalGame.state = GlobalGameState::PLAYING;
         board.clear();
+        return true;
+    }
+
+    if (whiteTypeButton.isToggled(mousePosition)) {
+        const PlayerType next = localGame.isPlayerAI(PieceType::PIECE_WHITE)
+                              ? PlayerType::HUMAN
+                              : PlayerType::AI;
+        localGame.setPlayerType(PieceType::PIECE_WHITE, next);
         return true;
     }
 
@@ -106,7 +128,38 @@ void Game::handleTurn() {
         }
     }
 
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    const bool aiTurn = localGame.isCurrentPlayerAI() && localGame.isPlaying();
+
+    if (!aiTurn && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         board.createPiece(GetMousePosition(), localGame.getCurrentPlaying());
+    }
+
+    if (aiTurn) {
+        aiWaitTimer += GetFrameTime();
+        if (aiWaitTimer >= AI_THINK_DELAY) {
+            aiWaitTimer = 0.0f;
+            playAIMove();
+        }
+    } else {
+        aiWaitTimer = 0.0f;
+    }
+}
+
+void Game::playAIMove() {
+    const Coordinate move = AI::chooseMove(localGame);
+    if (board.createPiece(move, localGame.getCurrentPlaying())) {
+        return;
+    }
+
+    const int boardSize = localGame.getBoardSize();
+    for (int row = 1; row <= boardSize; ++row) {
+        for (int col = 1; col <= boardSize; ++col) {
+            if (localGame.getPiece(row, col) != PieceType::PIECE_EMPTY) {
+                continue;
+            }
+            if (board.createPiece(Coordinate(row, col), localGame.getCurrentPlaying())) {
+                return;
+            }
+        }
     }
 }

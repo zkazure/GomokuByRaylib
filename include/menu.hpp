@@ -19,6 +19,7 @@ public:
     void draw() override;
     bool isToggled(Vector2 point) const;
     void setEnabled(bool value);
+    void setInfo(const std::string& value);
 };
 
 
