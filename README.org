@@ -52,7 +52,7 @@ bear --output build/compile_commands.json -- make
 一方棋手。既区分黑白棋手（持子），也区分这一方由谁操控，因此在网络对战中同样能说明对面是谁。
 
 - playing: 持子，这一方在棋盘上下什么棋子（black / white）。
-- type: 操控者类型（human / ai）。规划中、尚未实现：id、name。
+- type: 操控者类型（human / ai），随存档保存与恢复。规划中、尚未实现：id、name。
 
 - isAI: 是否由 AI 操控，等价于 ~type == PlayerType::AI~。
 - 构造函数为 ~explicit~，避免 ~PieceType~ 被隐式转换成 ~Player~ 后悄悄丢掉操控者类型。
@@ -127,8 +127,13 @@ bear --output build/compile_commands.json -- make
   moveHistory
   rmoveHistory.size()
   rmoveHistory
+  blackPlayer.type whitePlayer.type
   #+end_example
-- loadFromFile：读档后按存档里的持子颜色调用 ~setCurrentPlayer()~ 复位行棋方指针。
+  最后一行的两个操控者类型是后加的：前三行与前六个字段的语义一直没变，所以旧档仍能读，
+  只是在末尾少一行。
+- loadFromFile：读档后按存档里的持子颜色调用 ~setCurrentPlayer()~ 复位行棋方指针，
+  再按最后一行的类型恢复黑白双方的操控者。**类型行缺失时保留内存里当前的设置**，
+  不覆盖成"人类对人类"——旧档没有表达对手偏好，不该顺手把玩家选好的对手改掉。
 
 ** Object
 

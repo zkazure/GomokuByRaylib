@@ -284,6 +284,9 @@ bool LocalGame::saveToFile(const std::string& path) const {
              << static_cast<int>(move->type) << '\n';
     }
 
+    file << static_cast<int>(blackPlayer.type) << ' '
+         << static_cast<int>(whitePlayer.type) << '\n';
+
     return static_cast<bool>(file);
 }
 
@@ -333,11 +336,22 @@ bool LocalGame::loadFromFile(const std::string& path) {
         }
     }
 
+    int loadedBlackType = 0;
+    int loadedWhiteType = 0;
+    const bool hasPlayerTypes
+        = static_cast<bool>(file >> loadedBlackType >> loadedWhiteType);
+
     boardSize = loadedBoardSize;
     state = static_cast<LocalGameState>(loadedState);
     setCurrentPlayer(static_cast<PieceType>(loadedPlayer));
     boardState = std::move(loadedBoard);
     moveHistory = std::move(loadedHistory);
     rmoveHistory = std::move(loadedRedoHistory);
+
+    if (hasPlayerTypes) {
+        blackPlayer.type = static_cast<PlayerType>(loadedBlackType);
+        whitePlayer.type = static_cast<PlayerType>(loadedWhiteType);
+    }
+
     return true;
 }
