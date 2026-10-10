@@ -42,8 +42,6 @@ bool LocalGame::make1Move(Coordinate coor, PieceType type) {
         rmoveHistory.pop();
     }
 
-    nextTurn();
-
     return true;
 }
 
@@ -183,6 +181,14 @@ bool LocalGame::isBoardEmpty() const {
     return moveHistory.empty();
 }
 
+bool LocalGame::hasPlacedThisTurn() const {
+    if (moveHistory.empty()) {
+        return false;
+    }
+
+    return moveHistory.top().type == currentPlayer->playing;
+}
+
 bool LocalGame::isBoardFull() const {
     return static_cast<int>(moveHistory.size()) >= boardSize * boardSize;
 }
@@ -262,7 +268,6 @@ Move LocalGame::redoMove() {
 
     boardState[move.row][move.col] = move.type;
     setCurrentPlayer(move.type);
-    nextTurn();
     state = LocalGameState::PLAYING;
     checkOutcome();
 

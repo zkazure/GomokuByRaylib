@@ -108,12 +108,13 @@ bear --output build/compile_commands.json -- make
 ~main~、~menu~ 不直接访问 ~boardSize~ / ~state~ / ~boardState~ / ~moveHistory~ / ~rmoveHistory~ /
 ~currentPlayer~，一律走下面的查询与记账方法，避免同一份状态出现两条读写路径。
 
-- Make1Move: 改变 boardState、moveHistory，然后 nextTurn。
+- Make1Move: 只改 boardState 与 moveHistory，**不切换行棋方**。一个回合落一子，
+  是否已经落子由 ~hasPlacedThisTurn~ 判断，回合由 ~nextTurn()~ 推进。
 - getLastMove: 拿到最近一步棋的相关参数，如果没有则返回一个 PieceType::EMPTY 的 Move。
 - clear：清空棋盘，行棋方复位为黑棋；棋手的类型、名字与分数都保留
   （换一局不重置玩家选好的对手，也不清空累计比分）。
 - setCurrentPlayer(color)：按持子颜色指定行棋方。
-- nextTurn：把行棋方换成另一方。
+- nextTurn：把行棋方换成另一方。由右侧的 ~NEXT TURN~ 按钮调用，不自动发生。
 
 判断：
 
@@ -122,6 +123,7 @@ bear --output build/compile_commands.json -- make
 - canUndo / canRedo：还有没有可撤销 / 可重做的棋步。
 - getBoardSize：棋盘边长。
 - getPiece(row, col)：棋盘上某个交点的棋子。
+- hasPlacedThisTurn：本回合是否已经落子。判定方式是~!moveHistory.empty() && moveHistory.top().type == currentPlayer->playing~：最后一手的颜色就是行棋方的持子，即说明他这一手已经落下、只等推进回合。所以它是推出来的，不需要额外状态，也不进存档。
 - getCurrentPlaying：行棋方的持子，也就是现在该下什么棋子。
 - isFiveAt(row, col, type)：把 ~(row, col)~ 视作已落 ~type~，沿横、竖、两条对角线四个方向取
   穿过该点的同色连续段，任一方向长度 >= 5 即为真。
@@ -140,9 +142,11 @@ bear --output build/compile_commands.json -- make
 
 记账：
 
-- undoMove：撤销一手，返回被撤的那一手。内部改动 boardState、两个历史栈、行棋方，并把
-  ~state~ 复位为 playing。历史为空时返回一个 PieceType::EMPTY 的 Move。
-- redoMove：重做一手，返回被重做的那一手。内部改动同样几处，并调用 ~checkOutcome~。
+- undoMove：撤销一手，返回被撤的那一手。内部改动 boardState、两个历史栈，并把行棋方置回
+  **被撤那一手的持有者**、把 ~state~ 复位为 playing。于是 ~hasPlacedThisTurn~ 随之变假，
+  他可以重新落这一手。历史为空时返回一个 PieceType::EMPTY 的 Move。
+- redoMove：重做一手，返回被重做的那一手。行棋方置为那一手的持有者（**不推进回合**），
+  恢复的是"这一手刚落下、尚未按 NEXT TURN"的状态，并调用 ~checkOutcome~。
 
 存档：
 
@@ -236,9 +240,10 @@ Everything which is visible in game is an ~object~.
 游戏本体，持有本局的全部对象，把主循环拆成更新与绘制两个阶段。
 
 - globalGame / localGame / board：本局的状态与棋盘。
-- 八个 Button：左侧两个切换黑白双方的操控者，右侧六个是对局操作。
-- ScoreBoard、WinLossDeclare：右侧面板。
-- 右侧按钮从上到下：UNDO、REDO、SAVE GAME、LOAD GAME、NEW ROUND、NEW GAME。
+- 九个 Button：右侧七个是对局操作，左侧两个切换黑白双方的操控者。
+- GOMOKU 标题、ScoreBoard、WinLossDeclare 都在**左侧**（棋盘左边那一栏），右侧整列留给按钮。
+- 右侧按钮从上到下：UNDO、REDO、NEXT TURN、SAVE GAME、LOAD GAME、NEW ROUND、NEW GAME。
+  列内间距 45px、下沿压在棋盘底边上（与棋盘同高）。
   NEW ROUND 只清棋盘、**保留比分**（一局结束后的续局）；NEW GAME 连比分一起归零（开新的一场）。
   两者都保留棋手的操控者类型与名字——那是玩家设置，不属于这一局的状态。NEW GAME 始终可点。
 - aiWaitTimer：AI 思考计时，进入 AI 回合后累计帧时间。
@@ -247,13 +252,15 @@ Everything which is visible in game is an ~object~.
 
 - shouldClose：窗口是否被要求关闭。
 - update：一帧的逻辑，不碰任何绘制。依次做
-  + 刷新按钮启用态（undo / redo 看历史，NEW ROUND 看本局是否结束，NEW GAME 始终可点）。
+  + 刷新按钮启用态（undo / redo 看历史，NEXT TURN 看本回合是否已落子且本局未结束，
+    NEW ROUND 看本局是否结束，NEW GAME 始终可点）。
     两个切换按钮的文案是固定的 ~BLACK: SWITCH~ / ~WHITE: SWITCH~，当前是谁在操控由记分板显示
   + 处理按钮点击；有按钮吃掉这次点击就到此为止
   + 全局状态为 GAMEOVER 时到此为止
   + 判定胜负并计分
-  + 人类点击落子（轮到 AI 时忽略鼠标）
-  + AI 回合：累计 ~aiWaitTimer~，满 ~AI_THINK_DELAY~（0.35s）才落子；不在 AI 回合时清零
+  + 人类点击落子（轮到 AI 时忽略鼠标；本回合已经落过子也不再落）
+  + AI 回合：累计 ~aiWaitTimer~，满 ~AI_THINK_DELAY~（0.35s）才落子；不在 AI 回合时清零。
+    落子后 ~hasPlacedThisTurn~ 为真、AI 回合结束，它会停下来等 NEXT TURN，不会连下
 - playAIMove：问 ~AI::chooseMove~ 要一步，走 ~board.createPiece~ 落子；万一非法就线性找一个空点兜底。
 - render：BeginDrawing、画棋盘与右侧面板、EndDrawing。不画"轮到谁"的提示——行棋方由棋盘上
   最后一手的标记与记分板那一行体现，AI 是不是在思考看它下一手落下来即可。
@@ -262,13 +269,14 @@ Everything which is visible in game is an ~object~.
 
 - 黑白双方的操控者各由一个按钮切换（左侧的 ~BLACK: SWITCH~ / ~WHITE: SWITCH~，走
   ~localGame.setPlayerType~），对局中也可切，点击即时生效。
-- 双方都是 AI 时对局自己走下去，直到分出胜负或平局。~AI::chooseMove~ 对空盘返回天元，
-  所以黑方是 AI 时也能先行，不需要人类先摆一手。
-- 人类落子有门禁：轮到 AI 时忽略鼠标，人类无法替 AI 落子，也不会与 AI 在同一帧各下一手。
-- 悔棋在"至少有一方是人类"时撤到轮到人类为止：撤掉 AI 的应手后，若行棋方仍是 AI 就再撤一手，
-  所以按一次 UNDO 通常撤两手，并且 AI 不会立刻重下。
-- 双方都是 AI 时没有"轮到人类"可言，UNDO 只撤一手。因为下一步仍是 AI，0.35s 后它会把这一手
-  重下回来（同一局面决策是确定的），所以这个按钮在这种模式下更像"回看一步"。
+- **一回合落一子，回合靠 NEXT TURN 推进**。落子只是落子，不会自动换人；`hasPlacedThisTurn`
+  为真时 NEXT TURN 才亮。人类与 AI 遵守同一条规则。
+- 所以 AI 也是"落一子就停"：轮到它时它会自己下（0.35s 后），下完等你按 NEXT TURN 才继续。
+  AI 对 AI 时就得一下一下按，好处是节奏完全由你控制。
+- 人类落子有门禁：轮到 AI 时忽略鼠标，本回合已落过子也不再响应，所以不会替 AI 落子，
+  也不会一回合落下两子。
+- UNDO 一律**只撤一手**，不看对方是人还是 AI。撤掉的那一手如果是 AI 下的，行棋方会回到它，
+  它 0.35s 后会把这一手重新下回来（同一局面决策是确定的）——这是"撤一手"的直接后果。
 - 胜负与计分仍由 ~update~ 判：谁成五就给**那个棋手**加分（~localGame.addScore~），
   悔棋时给对应棋手回滚（~removeScore~）；平局只把全局状态置为 GAMEOVER，双方都不加分。
 

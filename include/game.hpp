@@ -22,6 +22,7 @@ private:
     Button whiteTypeButton;
     Button undoButton;
     Button redoButton;
+    Button nextTurnButton;
     Button saveGameButton;
     Button loadGameButton;
     Button nextRoundButton;
@@ -35,5 +36,4 @@ private:
     void handleTurn();
     void playAIMove();
     void togglePlayerType(PieceType color);
-    bool hasHumanPlayer() const;
 };

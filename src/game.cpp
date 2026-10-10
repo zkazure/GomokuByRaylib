@@ -10,14 +10,15 @@ Game::Game(Vector2 screenLayout)
             {screenLayout.x / 2, screenLayout.y / 2}),
       blackTypeButton({87, 460}, "BLACK: SWITCH", 12),
       whiteTypeButton({87, 505}, "WHITE: SWITCH", 12),
-      undoButton({700, 280}, "UNDO", 14),
-      redoButton({700, 325}, "REDO", 14),
+      undoButton({700, 235}, "UNDO", 14),
+      redoButton({700, 280}, "REDO", 14),
+      nextTurnButton({700, 325}, "NEXT TURN", 14),
       saveGameButton({700, 370}, "SAVE GAME", 14),
       loadGameButton({700, 415}, "LOAD GAME", 14),
       nextRoundButton({700, 460}, "NEW ROUND", 14),
       newGameButton({700, 505}, "NEW GAME", 14),
-      scoreBoard({650, 150}, &localGame),
-      winLossDeclare({650, 215}, &localGame) {}
+      scoreBoard({20, 150}, &localGame),
+      winLossDeclare({20, 215}, &localGame) {}
 
 bool Game::shouldClose() const {
     return WindowShouldClose();
@@ -41,14 +42,15 @@ void Game::render() {
 
     board.draw();
 
-    DrawText("GOMOKU", 650, 75, 24, UiPalette::foreground);
+    DrawText("GOMOKU", 20, 75, 24, UiPalette::foreground);
 
     blackTypeButton.draw();
     whiteTypeButton.draw();
-    saveGameButton.draw();
-    loadGameButton.draw();
     undoButton.draw();
     redoButton.draw();
+    nextTurnButton.draw();
+    saveGameButton.draw();
+    loadGameButton.draw();
     nextRoundButton.draw();
     newGameButton.draw();
 
@@ -62,11 +64,7 @@ void Game::updateButtons() {
     undoButton.setEnabled(localGame.canUndo());
     redoButton.setEnabled(localGame.canRedo());
     nextRoundButton.setEnabled(!localGame.isPlaying());
-}
-
-bool Game::hasHumanPlayer() const {
-    return !localGame.isPlayerAI(PieceType::PIECE_BLACK)
-        || !localGame.isPlayerAI(PieceType::PIECE_WHITE);
+    nextTurnButton.setEnabled(localGame.hasPlacedThisTurn() && localGame.isPlaying());
 }
 
 void Game::togglePlayerType(PieceType color) {
@@ -97,14 +95,16 @@ bool Game::handleButtonClicks() {
 
     if (undoButton.isToggled(mousePosition)) {
         board.undo();
-        while (hasHumanPlayer() && localGame.isCurrentPlayerAI() && localGame.canUndo()) {
-            board.undo();
-        }
         return true;
     }
 
     if (redoButton.isToggled(mousePosition)) {
         board.redo();
+        return true;
+    }
+
+    if (nextTurnButton.isToggled(mousePosition)) {
+        localGame.nextTurn();
         return true;
     }
 
@@ -145,9 +145,10 @@ void Game::handleTurn() {
         }
     }
 
-    const bool aiTurn = localGame.isCurrentPlayerAI() && localGame.isPlaying();
+    const bool placed = localGame.hasPlacedThisTurn();
+    const bool aiTurn = localGame.isCurrentPlayerAI() && localGame.isPlaying() && !placed;
 
-    if (!aiTurn && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    if (!aiTurn && !placed && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         board.createPiece(GetMousePosition(), localGame.getCurrentPlaying());
     }
 
