@@ -64,11 +64,6 @@ void Game::updateButtons() {
     nextRoundButton.setEnabled(!localGame.isPlaying());
 }
 
-bool Game::hasHumanPlayer() const {
-    return !localGame.isPlayerAI(PieceType::PIECE_BLACK)
-        || !localGame.isPlayerAI(PieceType::PIECE_WHITE);
-}
-
 void Game::togglePlayerType(PieceType color) {
     const PlayerType next = localGame.isPlayerAI(color) ? PlayerType::HUMAN : PlayerType::AI;
     localGame.setPlayerType(color, next);
@@ -97,9 +92,6 @@ bool Game::handleButtonClicks() {
 
     if (undoButton.isToggled(mousePosition)) {
         board.undo();
-        while (hasHumanPlayer() && localGame.isCurrentPlayerAI() && localGame.canUndo()) {
-            board.undo();
-        }
         return true;
     }
 

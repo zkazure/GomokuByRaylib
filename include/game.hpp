@@ -35,5 +35,4 @@ private:
     void handleTurn();
     void playAIMove();
     void togglePlayerType(PieceType color);
-    bool hasHumanPlayer() const;
 };
