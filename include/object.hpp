@@ -14,6 +14,7 @@ protected:
 public:
     Object();
     Object(Vector2 p);
+    virtual ~Object();
     virtual void draw() = 0;
 };
 

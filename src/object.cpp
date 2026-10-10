@@ -9,6 +9,7 @@
 
 Object::Object() : position({0, 0}) {}
 Object::Object(Vector2 p) : position(p) {}
+Object::~Object() {}
 
 
 Board::Board(GlobalGame * const g, LocalGame * l, Vector2 p)
