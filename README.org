@@ -77,12 +77,34 @@ bear --output build/compile_commands.json -- make
 原对象的棋手。当前代码不存在拷贝点（~Board~ 只持有 ~LocalGame*~，AI 也只需要复制棋盘状态）；
 若将来要做整局试算或联网同步，需先自定义拷贝，或改为存索引。
 
+约定：**本局状态的判断与修改一律经由 LocalGame 的方法**。成员虽然是 public，但 ~Board~、
+~main~、~menu~ 不直接访问 ~boardSize~ / ~state~ / ~boardState~ / ~moveHistory~ / ~rmoveHistory~ /
+~currentPlayer~，一律走下面的查询与记账方法，避免同一份状态出现两条读写路径。
+
 - Make1Move: 改变 boardState、moveHistory，然后 nextTurn。
 - getLastMove: 拿到最近一步棋的相关参数，如果没有则返回一个 PieceType::EMPTY 的 Move。
-- checkOutcome: 检查胜负。取最近一手，交给 ~isFiveAt~ 判定。
+- checkOutcome: 检查胜负。取最近一手，交给 ~isFiveAt~ 判定。由 ~main~ 每帧调用。
 - clear：清空棋盘，行棋方复位为黑棋；棋手类型保留（换一局不重置玩家选好的对手）。
 - setCurrentPlayer(color)：按持子颜色指定行棋方。
 - nextTurn：把行棋方换成另一方。
+
+判断：
+
+- isPlaying：本局是否仍在进行（~state == playing~）。
+- getState：本局胜负状态。
+- canUndo / canRedo：还有没有可撤销 / 可重做的棋步。
+- getBoardSize：棋盘边长。
+- getPiece(row, col)：棋盘上某个交点的棋子。
+- getCurrentPlaying：行棋方的持子，也就是现在该下什么棋子。
+
+记账：
+
+- undoMove：撤销一手，返回被撤的那一手。内部改动 boardState、两个历史栈、行棋方，并把
+  ~state~ 复位为 playing。历史为空时返回一个 PieceType::EMPTY 的 Move。
+- redoMove：重做一手，返回被重做的那一手。内部改动同样几处，并调用 ~checkOutcome~。
+
+存档：
+
 - saveToFile:
   #+begin_example
   boardSize
@@ -135,8 +157,10 @@ Everything which is visible in game is an ~object~.
 - pos2coor: convert position on screen to coordinate on the board.
 - coor2pos
 - createPiece: 同时调用 localGame->make1Move。
-- undo：悔棋。行棋方回到被撤那一手所属的棋手。
-- redo: 取消悔棋。行棋方随重做的那一手继续往下走。
+- undo：悔棋。记账交给 ~localGame->undoMove()~（行棋方由它复位到被撤那一手所属的棋手），
+  Board 只负责删除对应的 Piece 对象，并按被撤掉的胜负回滚 globalGame 的分数。
+- redo: 取消悔棋。记账交给 ~localGame->redoMove()~（内部会重新判定胜负），Board 只负责重建
+  Piece 对象并按新的胜负结算分数。
 - clear：清空棋盘
 
 

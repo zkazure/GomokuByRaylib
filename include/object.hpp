@@ -25,7 +25,7 @@ private:
     LocalGame *localGame;
     const float ratio = (float)3/4;
     const float width = ratio * std::min(globalGame->screenLayout.x, globalGame->screenLayout.y);
-    const float cellWidth = width / (localGame->boardSize + 1);
+    const float cellWidth = width / (localGame->getBoardSize() + 1);
     const Vector2 leftTop = Vector2Add(position, {-width/2, -width/2});
 
     std::vector<std::vector<Vector2>> intersections;

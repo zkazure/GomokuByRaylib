@@ -55,4 +55,14 @@ public:
     void nextTurn();
     bool saveToFile(const std::string& path) const;
     bool loadFromFile(const std::string& path);
+
+    bool isPlaying() const;
+    LocalGameState getState() const;
+    bool canUndo() const;
+    bool canRedo() const;
+    int getBoardSize() const;
+    PieceType getPiece(int row, int col) const;
+    PieceType getCurrentPlaying() const;
+    Move undoMove();
+    Move redoMove();
 };

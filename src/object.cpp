@@ -14,7 +14,7 @@ Object::Object(Vector2 p) : position(p) {}
 Board::Board(GlobalGame * const g, LocalGame * l, Vector2 p)
     : Object(p), globalGame(g), localGame(l)
 {
-    int boardSize = localGame->boardSize;
+    int boardSize = localGame->getBoardSize();
 
     for (int i = 0; i <= boardSize+1; ++i) {
         intersections.push_back(std::vector<Vector2>());
@@ -57,7 +57,7 @@ Board::Board(GlobalGame * const g, LocalGame * l, Vector2 p)
 }
 
 Board::~Board() {
-    int boardSize = localGame->boardSize;
+    int boardSize = localGame->getBoardSize();
     for (int i = 1; i <= boardSize; ++i) {
         for (int j = 1; j <= boardSize; ++j) {
             if (pieces[i][j] != nullptr) {
@@ -68,7 +68,7 @@ Board::~Board() {
 }
 
 void Board::draw() {
-    int boardSize = localGame->boardSize;
+    int boardSize = localGame->getBoardSize();
     Color background = UiPalette::board;
 
     DrawRectangleV(leftTop, {width, width}, background);
@@ -106,7 +106,7 @@ float Board::getCellWidth() const { return cellWidth; }
 Coordinate Board::pos2coor(Vector2 position) const {
     Coordinate coordinate = {16, 16};
 
-    int boardSize = localGame->boardSize;
+    int boardSize = localGame->getBoardSize();
     for (int i = 0; i <= boardSize+1; ++i) {
         if (position.x < intersections[0][i].x) {
             coordinate.second = i-1;
@@ -163,7 +163,7 @@ Vector2 Board::coor2pos(Coordinate coor) const {
 }
 
 bool Board::createPiece(Coordinate coor, PieceType type) {
-    const int boardSize = localGame->boardSize;
+    const int boardSize = localGame->getBoardSize();
     if (coor.first <= 0 || coor.first >= boardSize + 1
         || coor.second <= 0 || coor.second >= boardSize + 1) {
         return false;
@@ -179,7 +179,7 @@ bool Board::createPiece(Coordinate coor, PieceType type) {
 }
 
 bool Board::createPiece(Vector2 position, PieceType type) {
-    const int boardSize = localGame->boardSize;
+    const int boardSize = localGame->getBoardSize();
     if (!std::isfinite(position.x) || !std::isfinite(position.y)
         || position.x < intersections[1][1].x - cellWidth
         || position.x > intersections[boardSize][boardSize].x + cellWidth
@@ -192,27 +192,18 @@ bool Board::createPiece(Vector2 position, PieceType type) {
 }
 
 void Board::undo() {
-    if (localGame->moveHistory.empty()) {
+    if (!localGame->canUndo()) {
         return;
     }
 
-    Move lastMove = localGame->moveHistory.top();
-    localGame->moveHistory.pop();
-    localGame->rmoveHistory.push(lastMove);
+    const LocalGameState outcome = localGame->getState();
+    const Move lastMove = localGame->undoMove();
 
     Piece*& lastPiece = pieces[lastMove.row][lastMove.col];
-    PieceType type = lastPiece->getType();
-
     delete lastPiece;
     lastPiece = nullptr;
 
-    localGame->boardState[lastMove.row][lastMove.col] = PieceType::PIECE_EMPTY;
-
-    localGame->setCurrentPlayer(type);
-
     if (globalGame->state == GlobalGameState::GAMEOVER) {
-        const LocalGameState outcome = localGame->state;
-
         if (outcome == LocalGameState::BLACK_WIN && globalGame->score.first > 0) {
             globalGame->score.first -= 1;
         } else if (outcome == LocalGameState::WHITE_WIN && globalGame->score.second > 0) {
@@ -220,42 +211,32 @@ void Board::undo() {
         }
     }
 
-    localGame->state = LocalGameState::PLAYING;
     globalGame->state = GlobalGameState::PLAYING;
-
 }
 
 void Board::redo() {
-    if (localGame->rmoveHistory.empty()) {
+    if (!localGame->canRedo()) {
         return;
     }
 
-    const Move move = localGame->rmoveHistory.top();
-    localGame->rmoveHistory.pop();
+    const Move move = localGame->redoMove();
 
-    localGame->boardState[move.row][move.col] = move.type;
-    localGame->moveHistory.push(move);
     pieces[move.row][move.col] = new Piece(this, coor2pos({move.row, move.col}),
                                            move.type);
-    localGame->setCurrentPlayer(move.type);
-    localGame->nextTurn();
 
-    localGame->state = LocalGameState::PLAYING;
-    localGame->checkOutcome();
-    if (localGame->state == LocalGameState::BLACK_WIN) {
+    if (localGame->getState() == LocalGameState::BLACK_WIN) {
         globalGame->state = GlobalGameState::GAMEOVER;
         globalGame->score.first += 1;
-    } else if (localGame->state == LocalGameState::WHITE_WIN) {
+    } else if (localGame->getState() == LocalGameState::WHITE_WIN) {
         globalGame->state = GlobalGameState::GAMEOVER;
         globalGame->score.second += 1;
     } else {
         globalGame->state = GlobalGameState::PLAYING;
     }
-
 }
 
 void Board::clear() {
-    int size = localGame->boardSize;
+    int size = localGame->getBoardSize();
 
     for (int i = 1; i <= size; ++i) {
         for (int j = 1; j <= size; ++j) {
@@ -270,7 +251,7 @@ void Board::clear() {
 }
 
 void Board::syncPiecesFromLocalGame() {
-    int size = localGame->boardSize;
+    int size = localGame->getBoardSize();
 
     for (int row = 1; row <= size; ++row) {
         for (int col = 1; col <= size; ++col) {
@@ -279,7 +260,7 @@ void Board::syncPiecesFromLocalGame() {
                 pieces[row][col] = nullptr;
             }
 
-            PieceType type = localGame->boardState[row][col];
+            PieceType type = localGame->getPiece(row, col);
             if (type != PieceType::PIECE_EMPTY) {
                 pieces[row][col] = new Piece(this, coor2pos({row, col}), type);
             }

@@ -137,6 +137,68 @@ void LocalGame::nextTurn() {
     currentPlayer = (currentPlayer == &blackPlayer) ? &whitePlayer : &blackPlayer;
 }
 
+bool LocalGame::isPlaying() const {
+    return state == LocalGameState::PLAYING;
+}
+
+LocalGameState LocalGame::getState() const {
+    return state;
+}
+
+bool LocalGame::canUndo() const {
+    return !moveHistory.empty();
+}
+
+bool LocalGame::canRedo() const {
+    return !rmoveHistory.empty();
+}
+
+int LocalGame::getBoardSize() const {
+    return boardSize;
+}
+
+PieceType LocalGame::getPiece(int row, int col) const {
+    return boardState[row][col];
+}
+
+PieceType LocalGame::getCurrentPlaying() const {
+    return currentPlayer->playing;
+}
+
+Move LocalGame::undoMove() {
+    if (moveHistory.empty()) {
+        return Move(0, 0, PieceType::PIECE_EMPTY);
+    }
+
+    const Move lastMove = moveHistory.top();
+    moveHistory.pop();
+    rmoveHistory.push(lastMove);
+
+    boardState[lastMove.row][lastMove.col] = PieceType::PIECE_EMPTY;
+    setCurrentPlayer(lastMove.type);
+    state = LocalGameState::PLAYING;
+
+    return lastMove;
+}
+
+Move LocalGame::redoMove() {
+    if (rmoveHistory.empty()) {
+        return Move(0, 0, PieceType::PIECE_EMPTY);
+    }
+
+    const Move move = rmoveHistory.top();
+    rmoveHistory.pop();
+    moveHistory.push(move);
+
+    boardState[move.row][move.col] = move.type;
+    setCurrentPlayer(move.type);
+    nextTurn();
+    state = LocalGameState::PLAYING;
+    checkOutcome();
+
+    return move;
+}
+
 bool LocalGame::saveToFile(const std::string& path) const {
     std::ofstream file(path);
     if (!file) {

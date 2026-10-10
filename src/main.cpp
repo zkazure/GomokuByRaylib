@@ -27,9 +27,9 @@ int main() {
 
 
     while (!WindowShouldClose()) {
-        undoButton.setEnabled(!localGame.moveHistory.empty());
-        redoButton.setEnabled(!localGame.rmoveHistory.empty());
-        nextRoundButton.setEnabled(localGame.state != LocalGameState::PLAYING);
+        undoButton.setEnabled(localGame.canUndo());
+        redoButton.setEnabled(localGame.canRedo());
+        nextRoundButton.setEnabled(!localGame.isPlaying());
 
         BeginDrawing();
         {
@@ -63,7 +63,7 @@ int main() {
                     if (localGame.loadFromFile("gomoku.save")) {
                         board.syncPiecesFromLocalGame();
                         globalGame.state =
-                            localGame.state == LocalGameState::PLAYING
+                            localGame.isPlaying()
                             ? GlobalGameState::PLAYING
                             : GlobalGameState::GAMEOVER;
                     }
@@ -91,9 +91,9 @@ int main() {
 
         {
             localGame.checkOutcome();
-            if (localGame.state != LocalGameState::PLAYING) {
+            if (!localGame.isPlaying()) {
                 globalGame.state = GlobalGameState::GAMEOVER;
-                if (localGame.state == LocalGameState::BLACK_WIN) {
+                if (localGame.getState() == LocalGameState::BLACK_WIN) {
                     globalGame.score.first += 1;
                 } else {
                     globalGame.score.second += 1;
@@ -102,7 +102,7 @@ int main() {
         }
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            board.createPiece(GetMousePosition(), localGame.currentPlayer->playing);
+            board.createPiece(GetMousePosition(), localGame.getCurrentPlaying());
         }
 
     }

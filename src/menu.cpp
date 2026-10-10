@@ -62,12 +62,12 @@ WinLossDeclare::WinLossDeclare(Vector2 p, const LocalGame * lg)
     : Object(p), localGame(lg) {}
 void WinLossDeclare::draw() {
     const char *declaration = "";
-    if (localGame->state == LocalGameState::BLACK_WIN) {
+    if (localGame->getState() == LocalGameState::BLACK_WIN) {
         declaration = "Black wins!";
-    } else if (localGame->state == LocalGameState::WHITE_WIN) {
+    } else if (localGame->getState() == LocalGameState::WHITE_WIN) {
         declaration = "White wins!";
     }
 
     DrawText(declaration, position.x, position.y, 16,
-             localGame->state == LocalGameState::PLAYING ? UiPalette::ink : UiPalette::accent);
+             localGame->isPlaying() ? UiPalette::ink : UiPalette::accent);
 }
