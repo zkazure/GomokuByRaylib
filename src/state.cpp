@@ -176,6 +176,10 @@ PieceType LocalGame::getCurrentPlaying() const {
     return currentPlayer->playing;
 }
 
+bool LocalGame::isBoardEmpty() const {
+    return moveHistory.empty();
+}
+
 Move LocalGame::undoMove() {
     if (moveHistory.empty()) {
         return Move(0, 0, PieceType::PIECE_EMPTY);

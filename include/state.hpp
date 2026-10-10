@@ -59,6 +59,7 @@ public:
     int getBoardSize() const;
     PieceType getPiece(int row, int col) const;
     PieceType getCurrentPlaying() const;
+    bool isBoardEmpty() const;
     bool isFiveAt(int row, int col, PieceType type) const;
     Move undoMove();
     Move redoMove();
