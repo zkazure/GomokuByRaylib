@@ -55,134 +55,59 @@ Move LocalGame::getLastMove() const {
     return moveHistory.top();
 }
 
+bool isFiveAt(const std::vector<std::vector<PieceType>>& board,
+              int row, int col, PieceType type) {
+    if (type == PieceType::PIECE_EMPTY) {
+        return false;
+    }
+
+    const int range = static_cast<int>(board.size());
+    if (row < 0 || row >= range || col < 0 || col >= range) {
+        return false;
+    }
+    if (board[row][col] != type) {
+        return false;
+    }
+
+    const int directions[4][2] = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
+
+    for (const auto &direction : directions) {
+        int cnt = 1;
+
+        for (int sign : {1, -1}) {
+            for (int step = 1; step < range; ++step) {
+                const int r = row + sign * direction[0] * step;
+                const int c = col + sign * direction[1] * step;
+                if (r < 0 || r >= range || c < 0 || c >= range) {
+                    break;
+                }
+                if (board[r][c] != type) {
+                    break;
+                }
+                cnt += 1;
+            }
+        }
+
+        if (cnt >= 5) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void LocalGame::checkOutcome() {
     Move lastMove = getLastMove();
     if (lastMove.type == PieceType::PIECE_EMPTY) {
-        return ;
+        return;
     }
 
-    {
-        int cnt = 0;
-        for (Coordinate nearMove = {lastMove.row, lastMove.col};
-             nearMove.first > 0 && nearMove.first <= boardSize &&
-                 nearMove.second > 0 && nearMove.second <= boardSize;
-             nearMove.first += 1) {
-            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
-                break;
-            } else {
-                cnt += 1;
-            }
-        }
-        for (Coordinate nearMove = {lastMove.row-1, lastMove.col};
-             nearMove.first > 0 && nearMove.first <= boardSize &&
-                 nearMove.second > 0 && nearMove.second <= boardSize;
-             nearMove.first -= 1) {
-            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
-                break;
-            } else {
-                cnt += 1;
-            }
-        }
-        if (cnt >= 5) {
-            if (lastMove.type == PieceType::PIECE_BLACK) {
-                state = LocalGameState::BLACK_WIN;
-            } else {
-                state = LocalGameState::WHITE_WIN;
-            }
-        }
-
-        cnt = 0;
-        for (Coordinate nearMove = {lastMove.row, lastMove.col};
-             nearMove.first > 0 && nearMove.first <= boardSize &&
-                 nearMove.second > 0 && nearMove.second <= boardSize;
-             nearMove.second += 1) {
-            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
-                break;
-            } else {
-                cnt += 1;
-            }
-        }
-        for (Coordinate nearMove = {lastMove.row, lastMove.col-1};
-             nearMove.first > 0 && nearMove.first <= boardSize &&
-                 nearMove.second > 0 && nearMove.second <= boardSize;
-             nearMove.second -= 1) {
-            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
-                break;
-            } else {
-                cnt += 1;
-            }
-        }
-        if (cnt >= 5) {
-            if (lastMove.type == PieceType::PIECE_BLACK) {
-                state = LocalGameState::BLACK_WIN;
-            } else {
-                state = LocalGameState::WHITE_WIN;
-            }
-        }
-
-        cnt = 0;
-        for (Coordinate nearMove = {lastMove.row, lastMove.col};
-             nearMove.first > 0 && nearMove.first <= boardSize &&
-                 nearMove.second > 0 && nearMove.second <= boardSize;
-             nearMove.first += 1, nearMove.second += 1) {
-            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
-                break;
-            } else {
-                cnt += 1;
-            }
-        }
-        for (Coordinate nearMove = {lastMove.row-1, lastMove.col-1};
-             nearMove.first > 0 && nearMove.first <= boardSize &&
-                 nearMove.second > 0 && nearMove.second <= boardSize;
-             nearMove.first -= 1, nearMove.second -= 1) {
-            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
-                break;
-            } else {
-                cnt += 1;
-            }
-        }
-        if (cnt >= 5) {
-            if (lastMove.type == PieceType::PIECE_BLACK) {
-                state = LocalGameState::BLACK_WIN;
-            } else {
-                state = LocalGameState::WHITE_WIN;
-            }
-        }
-
-        cnt = 0;
-        for (Coordinate nearMove = {lastMove.row, lastMove.col};
-             nearMove.first > 0 && nearMove.first <= boardSize &&
-                 nearMove.second > 0 && nearMove.second <= boardSize;
-             nearMove.first += 1, nearMove.second -= 1) {
-            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
-                break;
-            } else {
-                cnt += 1;
-            }
-        }
-        for (Coordinate nearMove = {lastMove.row-1, lastMove.col+1};
-             nearMove.first > 0 && nearMove.first <= boardSize &&
-                 nearMove.second > 0 && nearMove.second <= boardSize;
-             nearMove.first -= 1, nearMove.second += 1) {
-            if (boardState[nearMove.first][nearMove.second] != lastMove.type) {
-                break;
-            } else {
-                cnt += 1;
-            }
-        }
-        if (cnt >= 5) {
-            if (lastMove.type == PieceType::PIECE_BLACK) {
-                state = LocalGameState::BLACK_WIN;
-            }                else {
-                state = LocalGameState::WHITE_WIN;
-
-            }
-        }
+    if (!isFiveAt(boardState, lastMove.row, lastMove.col, lastMove.type)) {
+        return;
     }
 
-
-
-    return ;
+    state = (lastMove.type == PieceType::PIECE_BLACK)
+          ? LocalGameState::BLACK_WIN : LocalGameState::WHITE_WIN;
 }
 
 void LocalGame::clear() {
