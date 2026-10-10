@@ -187,6 +187,49 @@ Everything which is visible in game is an ~object~.
 
 - localGame: 获取本局胜负
 
+** Game
+
+游戏本体，持有本局的全部对象，把主循环拆成更新与绘制两个阶段。
+
+- globalGame / localGame / board：本局的状态与棋盘。
+- 五个 Button、ScoreBoard、WinLossDeclare：右侧面板。
+- 成员声明顺序即构造顺序：globalGame、localGame 先于 board（board 要用 screenLayout 与 boardSize
+  算 cellWidth），scoreBoard / winLossDeclare 持有二者指针，排在最后。
+
+- shouldClose：窗口是否被要求关闭。
+- update：一帧的逻辑，不碰任何绘制。依次做
+  + 刷新按钮启用态（undo / redo 看历史，NEW ROUND 看本局是否结束）
+  + 处理按钮点击；有按钮吃掉这次点击就到此为止
+  + 全局状态为 GAMEOVER 时到此为止
+  + 判定胜负并计分
+  + 人类点击落子
+- render：BeginDrawing、画棋盘与右侧面板、EndDrawing。
+
+~main~ 只负责窗口与循环骨架：
+
+#+begin_src cpp
+int main() {
+    const Vector2 screen = {800, 600};
+
+    InitWindow(screen.x, screen.y, "Gomoku By Raylib");
+    SetTargetFPS(60);
+
+    Game game(screen);
+
+    while (!game.shouldClose()) {
+        game.update();
+        game.render();
+    }
+
+    CloseWindow();
+
+    return 0;
+}
+#+end_src
+
+窗口尺寸由 ~main~ 持有并传给 ~Game~，不在两处重复写死。循环是先 update 后 render，
+所以点击的效果当帧就会画出来。
+
 * Roadmap [100%]
 
 MVP: 双人交替下五子棋。
