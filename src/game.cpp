@@ -8,8 +8,8 @@ Game::Game(Vector2 screenLayout)
       localGame(),
       board(&globalGame, &localGame,
             {screenLayout.x / 2, screenLayout.y / 2}),
-      blackTypeButton({87, 460}, "BLACK: HUMAN", 12),
-      whiteTypeButton({87, 505}, "WHITE: HUMAN", 12),
+      blackTypeButton({87, 460}, "BLACK: SWITCH", 12),
+      whiteTypeButton({87, 505}, "WHITE: SWITCH", 12),
       undoButton({700, 280}, "UNDO", 14),
       redoButton({700, 325}, "REDO", 14),
       saveGameButton({700, 370}, "SAVE GAME", 14),
@@ -62,10 +62,6 @@ void Game::updateButtons() {
     undoButton.setEnabled(localGame.canUndo());
     redoButton.setEnabled(localGame.canRedo());
     nextRoundButton.setEnabled(!localGame.isPlaying());
-    blackTypeButton.setInfo(localGame.isPlayerAI(PieceType::PIECE_BLACK) ? "BLACK: AI"
-                                                                        : "BLACK: HUMAN");
-    whiteTypeButton.setInfo(localGame.isPlayerAI(PieceType::PIECE_WHITE) ? "WHITE: AI"
-                                                                        : "WHITE: HUMAN");
 }
 
 bool Game::hasHumanPlayer() const {

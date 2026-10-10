@@ -197,7 +197,6 @@ Everything which is visible in game is an ~object~.
 
 - isToggled: 检测当前按钮是否被按下。禁用状态下恒为 false，所以禁用按钮也点不动。
 - setEnabled: 设置启用状态；禁用时画成灰色。
-- setInfo: 更换按钮上的文字，用于 ~WHITE: HUMAN / WHITE: AI~ 这种随状态变化的文案。
 
 **** ScoreBoard
 
