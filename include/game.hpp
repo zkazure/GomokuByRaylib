@@ -18,12 +18,13 @@ private:
     GlobalGame globalGame;
     LocalGame localGame;
     Board board;
+    Button blackTypeButton;
+    Button whiteTypeButton;
     Button undoButton;
     Button redoButton;
     Button saveGameButton;
     Button loadGameButton;
     Button nextRoundButton;
-    Button whiteTypeButton;
     ScoreBoard scoreBoard;
     WinLossDeclare winLossDeclare;
     float aiWaitTimer = 0.0f;
@@ -32,4 +33,6 @@ private:
     bool handleButtonClicks();
     void handleTurn();
     void playAIMove();
+    void togglePlayerType(PieceType color);
+    bool hasHumanPlayer() const;
 };

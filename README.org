@@ -201,7 +201,8 @@ Everything which is visible in game is an ~object~.
 游戏本体，持有本局的全部对象，把主循环拆成更新与绘制两个阶段。
 
 - globalGame / localGame / board：本局的状态与棋盘。
-- 六个 Button、ScoreBoard、WinLossDeclare：右侧面板。
+- 七个 Button：左侧两个切换黑白双方的操控者，右侧五个是对局操作。
+- ScoreBoard、WinLossDeclare：右侧面板。
 - aiWaitTimer：AI 思考计时，进入 AI 回合后累计帧时间。
 - 成员声明顺序即构造顺序：globalGame、localGame 先于 board（board 要用 screenLayout 与 boardSize
   算 cellWidth），scoreBoard / winLossDeclare 持有二者指针，排在最后。
@@ -220,11 +221,15 @@ Everything which is visible in game is an ~object~.
 
 人机对弈的几条约定：
 
-- 白方操控者由 ~WHITE: HUMAN / WHITE: AI~ 按钮切换（~localGame.setPlayerType~），对局中也可切，
-  点击即时生效。
+- 黑白双方的操控者各由一个按钮切换（左侧的 ~BLACK: xxx~ / ~WHITE: xxx~，走
+  ~localGame.setPlayerType~），对局中也可切，点击即时生效。
+- 双方都是 AI 时对局自己走下去，直到分出胜负或平局。~AI::chooseMove~ 对空盘返回天元，
+  所以黑方是 AI 时也能先行，不需要人类先摆一手。
 - 人类落子有门禁：轮到 AI 时忽略鼠标，人类无法替 AI 落子，也不会与 AI 在同一帧各下一手。
-- 悔棋在 PVE 下一次撤到"轮到人类"为止：撤掉 AI 的应手后，若行棋方仍是 AI 就再撤一手。
-  所以按一次 UNDO 通常会撤掉两手，并且 AI 不会立刻重下。
+- 悔棋在"至少有一方是人类"时撤到轮到人类为止：撤掉 AI 的应手后，若行棋方仍是 AI 就再撤一手，
+  所以按一次 UNDO 通常撤两手，并且 AI 不会立刻重下。
+- 双方都是 AI 时没有"轮到人类"可言，UNDO 只撤一手。因为下一步仍是 AI，0.35s 后它会把这一手
+  重下回来（同一局面决策是确定的），所以这个按钮在这种模式下更像"回看一步"。
 - 胜负与计分仍由 ~update~ 判：AI 成五时 ~localGame.getState()~ 为 WHITE_WIN，白方加分；
   平局只把全局状态置为 GAMEOVER，双方都不加分。
 

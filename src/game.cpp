@@ -8,12 +8,13 @@ Game::Game(Vector2 screenLayout)
       localGame(),
       board(&globalGame, &localGame,
             {screenLayout.x / 2, screenLayout.y / 2}),
+      blackTypeButton({87, 280}, "BLACK: HUMAN", 12),
+      whiteTypeButton({87, 325}, "WHITE: HUMAN", 12),
       undoButton({700, 325}, "UNDO", 14),
       redoButton({700, 370}, "REDO", 14),
       saveGameButton({700, 415}, "SAVE GAME", 14),
       loadGameButton({700, 460}, "LOAD GAME", 14),
       nextRoundButton({700, 505}, "NEW ROUND", 14),
-      whiteTypeButton({700, 280}, "WHITE: HUMAN", 12),
       scoreBoard({650, 150}, &globalGame),
       winLossDeclare({650, 215}, &localGame) {}
 
@@ -45,6 +46,7 @@ void Game::render() {
         DrawText("AI THINKING...", 650, 105, 12, UiPalette::muted);
     }
 
+    blackTypeButton.draw();
     whiteTypeButton.draw();
     saveGameButton.draw();
     loadGameButton.draw();
@@ -62,8 +64,20 @@ void Game::updateButtons() {
     undoButton.setEnabled(localGame.canUndo());
     redoButton.setEnabled(localGame.canRedo());
     nextRoundButton.setEnabled(!localGame.isPlaying());
+    blackTypeButton.setInfo(localGame.isPlayerAI(PieceType::PIECE_BLACK) ? "BLACK: AI"
+                                                                        : "BLACK: HUMAN");
     whiteTypeButton.setInfo(localGame.isPlayerAI(PieceType::PIECE_WHITE) ? "WHITE: AI"
-                                                                       : "WHITE: HUMAN");
+                                                                        : "WHITE: HUMAN");
+}
+
+bool Game::hasHumanPlayer() const {
+    return !localGame.isPlayerAI(PieceType::PIECE_BLACK)
+        || !localGame.isPlayerAI(PieceType::PIECE_WHITE);
+}
+
+void Game::togglePlayerType(PieceType color) {
+    const PlayerType next = localGame.isPlayerAI(color) ? PlayerType::HUMAN : PlayerType::AI;
+    localGame.setPlayerType(color, next);
 }
 
 bool Game::handleButtonClicks() {
@@ -89,7 +103,7 @@ bool Game::handleButtonClicks() {
 
     if (undoButton.isToggled(mousePosition)) {
         board.undo();
-        while (localGame.isCurrentPlayerAI() && localGame.canUndo()) {
+        while (hasHumanPlayer() && localGame.isCurrentPlayerAI() && localGame.canUndo()) {
             board.undo();
         }
         return true;
@@ -106,11 +120,13 @@ bool Game::handleButtonClicks() {
         return true;
     }
 
+    if (blackTypeButton.isToggled(mousePosition)) {
+        togglePlayerType(PieceType::PIECE_BLACK);
+        return true;
+    }
+
     if (whiteTypeButton.isToggled(mousePosition)) {
-        const PlayerType next = localGame.isPlayerAI(PieceType::PIECE_WHITE)
-                              ? PlayerType::HUMAN
-                              : PlayerType::AI;
-        localGame.setPlayerType(PieceType::PIECE_WHITE, next);
+        togglePlayerType(PieceType::PIECE_WHITE);
         return true;
     }
 
