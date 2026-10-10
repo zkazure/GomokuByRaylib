@@ -205,10 +205,10 @@ void Board::undo() {
     lastPiece = nullptr;
 
     if (globalGame->state == GlobalGameState::GAMEOVER) {
-        if (outcome == LocalGameState::BLACK_WIN && globalGame->score.first > 0) {
-            globalGame->score.first -= 1;
-        } else if (outcome == LocalGameState::WHITE_WIN && globalGame->score.second > 0) {
-            globalGame->score.second -= 1;
+        if (outcome == LocalGameState::BLACK_WIN) {
+            localGame->removeScore(PieceType::PIECE_BLACK);
+        } else if (outcome == LocalGameState::WHITE_WIN) {
+            localGame->removeScore(PieceType::PIECE_WHITE);
         }
     }
 
@@ -227,10 +227,10 @@ void Board::redo() {
 
     if (localGame->getState() == LocalGameState::BLACK_WIN) {
         globalGame->state = GlobalGameState::GAMEOVER;
-        globalGame->score.first += 1;
+        localGame->addScore(PieceType::PIECE_BLACK);
     } else if (localGame->getState() == LocalGameState::WHITE_WIN) {
         globalGame->state = GlobalGameState::GAMEOVER;
-        globalGame->score.second += 1;
+        localGame->addScore(PieceType::PIECE_WHITE);
     } else if (localGame->getState() == LocalGameState::DRAW) {
         globalGame->state = GlobalGameState::GAMEOVER;
     } else {

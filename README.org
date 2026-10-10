@@ -45,14 +45,15 @@ bear --output build/compile_commands.json -- make
 - screenLayout (default Vector2(800, 600))
 - GameState
 - boardBackground: 棋盘的背景颜色
-- score：黑白分数
 
 ** Player
 
 一方棋手。既区分黑白棋手（持子），也区分这一方由谁操控，因此在网络对战中同样能说明对面是谁。
 
 - playing: 持子，这一方在棋盘上下什么棋子（black / white）。
-- type: 操控者类型（human / ai），随存档保存与恢复。规划中、尚未实现：id、name。
+- type: 操控者类型（human / ai），随存档保存与恢复。
+- score: 这一方自己的胜局数。归棋手所有，不再是"黑白一对整数"。
+- name: 棋手名字，默认 ~player1~ / ~player2~，随存档保存与恢复。
 
 - isAI: 是否由 AI 操控，等价于 ~type == PlayerType::AI~。
 - 构造函数为 ~explicit~，避免 ~PieceType~ 被隐式转换成 ~Player~ 后悄悄丢掉操控者类型。
@@ -84,7 +85,8 @@ bear --output build/compile_commands.json -- make
 
 - Make1Move: 改变 boardState、moveHistory，然后 nextTurn。
 - getLastMove: 拿到最近一步棋的相关参数，如果没有则返回一个 PieceType::EMPTY 的 Move。
-- clear：清空棋盘，行棋方复位为黑棋；棋手类型保留（换一局不重置玩家选好的对手）。
+- clear：清空棋盘，行棋方复位为黑棋；棋手的类型、名字与分数都保留
+  （换一局不重置玩家选好的对手，也不清空累计比分）。
 - setCurrentPlayer(color)：按持子颜色指定行棋方。
 - nextTurn：把行棋方换成另一方。
 
@@ -105,6 +107,8 @@ bear --output build/compile_commands.json -- make
 - checkOutcome：取最近一手，先交给 ~isFiveAt~ 判成五，成五即置胜并返回；否则若 ~isBoardFull~
   为真则置平局。成五优先于平局，所以满盘上的制胜一手仍算胜。由 ~Game::update~ 每帧调用。
 - isBoardFull：棋盘是否已满，判定依据是 ~moveHistory.size() >= boardSize * boardSize~。
+- getScore(color) / addScore(color) / removeScore(color)：按棋手读写分数，~removeScore~ 不会扣成负数。
+- getName(color) / setName(color, name)：按棋手读写名字。
 - isPlayerAI(color)：某一方是否由 AI 操控。
 - isCurrentPlayerAI：行棋方是否由 AI 操控。
 - setPlayerType(color, type)：把某一方交给人或 AI，用于右侧面板的 ~WHITE: HUMAN / WHITE: AI~ 按钮。
@@ -128,12 +132,14 @@ bear --output build/compile_commands.json -- make
   rmoveHistory.size()
   rmoveHistory
   blackPlayer.type whitePlayer.type
+  blackPlayer.score whitePlayer.score blackPlayer.name whitePlayer.name
   #+end_example
-  最后一行的两个操控者类型是后加的：前三行与前六个字段的语义一直没变，所以旧档仍能读，
-  只是在末尾少一行。
-- loadFromFile：读档后按存档里的持子颜色调用 ~setCurrentPlayer()~ 复位行棋方指针，
-  再按最后一行的类型恢复黑白双方的操控者。**类型行缺失时保留内存里当前的设置**，
-  不覆盖成"人类对人类"——旧档没有表达对手偏好，不该顺手把玩家选好的对手改掉。
+  最后两行都是后加的：前三行与前六个字段的语义一直没变，所以旧档仍能读，只是在末尾少几行。
+  末尾按字段逐段解析——先读两个类型，再读两个分数，再读两个名字，**读到哪算哪，缺什么就保留
+  内存里的现值**，所以"没有类型行的旧档""只有类型行的档""带分数与名字的新档"都能读。
+- loadFromFile：读档后按存档里的持子颜色调用 ~setCurrentPlayer()~ 复位行棋方指针，再按末尾的
+  字段恢复双方的操控者类型、分数与名字。**字段缺失时保留内存里当前的设置**，不覆盖成默认值——
+  旧档没有表达对手偏好与比分，不该顺手把玩家选好的对手或累计比分改掉。
 
 ** Object
 
@@ -194,11 +200,11 @@ Everything which is visible in game is an ~object~.
 
 **** ScoreBoard
 
-- globalGame 获取得分。
+- localGame 取两个棋手的名字、操控者类型与分数，一行画一个棋手：石头标记 + `名字  类型` + 分数。
 
 **** WinLossDeclare
 
-- localGame: 获取本局胜负。黑白胜分别显示 ~Black wins!~ / ~White wins!~，平局显示 ~Draw!~；
+- localGame: 获取本局胜负。黑白胜分别显示 ~<名字> wins!~，平局显示 ~Draw!~；
   对局未结束时留空。文字用强调色，仅在未结束时是普通墨色。
 
 ** Game
@@ -235,8 +241,8 @@ Everything which is visible in game is an ~object~.
   所以按一次 UNDO 通常撤两手，并且 AI 不会立刻重下。
 - 双方都是 AI 时没有"轮到人类"可言，UNDO 只撤一手。因为下一步仍是 AI，0.35s 后它会把这一手
   重下回来（同一局面决策是确定的），所以这个按钮在这种模式下更像"回看一步"。
-- 胜负与计分仍由 ~update~ 判：AI 成五时 ~localGame.getState()~ 为 WHITE_WIN，白方加分；
-  平局只把全局状态置为 GAMEOVER，双方都不加分。
+- 胜负与计分仍由 ~update~ 判：谁成五就给**那个棋手**加分（~localGame.addScore~），
+  悔棋时给对应棋手回滚（~removeScore~）；平局只把全局状态置为 GAMEOVER，双方都不加分。
 
 ~main~ 只负责窗口与循环骨架：
 

@@ -207,6 +207,29 @@ void LocalGame::setPlayerType(PieceType color, PlayerType type) {
     playerOf(color).type = type;
 }
 
+int LocalGame::getScore(PieceType color) const {
+    return playerOf(color).score;
+}
+
+void LocalGame::addScore(PieceType color) {
+    playerOf(color).score += 1;
+}
+
+void LocalGame::removeScore(PieceType color) {
+    Player& player = playerOf(color);
+    if (player.score > 0) {
+        player.score -= 1;
+    }
+}
+
+std::string LocalGame::getName(PieceType color) const {
+    return playerOf(color).name;
+}
+
+void LocalGame::setName(PieceType color, const std::string& name) {
+    playerOf(color).name = name;
+}
+
 Move LocalGame::undoMove() {
     if (moveHistory.empty()) {
         return Move(0, 0, PieceType::PIECE_EMPTY);
@@ -287,6 +310,9 @@ bool LocalGame::saveToFile(const std::string& path) const {
     file << static_cast<int>(blackPlayer.type) << ' '
          << static_cast<int>(whitePlayer.type) << '\n';
 
+    file << blackPlayer.score << ' ' << whitePlayer.score << ' '
+         << blackPlayer.name << ' ' << whitePlayer.name << '\n';
+
     return static_cast<bool>(file);
 }
 
@@ -341,6 +367,15 @@ bool LocalGame::loadFromFile(const std::string& path) {
     const bool hasPlayerTypes
         = static_cast<bool>(file >> loadedBlackType >> loadedWhiteType);
 
+    int loadedBlackScore = 0;
+    int loadedWhiteScore = 0;
+    std::string loadedBlackName;
+    std::string loadedWhiteName;
+    const bool hasScores
+        = static_cast<bool>(file >> loadedBlackScore >> loadedWhiteScore);
+    const bool hasNames
+        = hasScores && static_cast<bool>(file >> loadedBlackName >> loadedWhiteName);
+
     boardSize = loadedBoardSize;
     state = static_cast<LocalGameState>(loadedState);
     setCurrentPlayer(static_cast<PieceType>(loadedPlayer));
@@ -351,6 +386,14 @@ bool LocalGame::loadFromFile(const std::string& path) {
     if (hasPlayerTypes) {
         blackPlayer.type = static_cast<PlayerType>(loadedBlackType);
         whitePlayer.type = static_cast<PlayerType>(loadedWhiteType);
+    }
+    if (hasScores) {
+        blackPlayer.score = loadedBlackScore;
+        whitePlayer.score = loadedWhiteScore;
+    }
+    if (hasNames) {
+        blackPlayer.name = loadedBlackName;
+        whitePlayer.name = loadedWhiteName;
     }
 
     return true;

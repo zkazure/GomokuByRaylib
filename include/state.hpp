@@ -12,7 +12,6 @@ public:
     Vector2 screenLayout = {800, 600};
     GlobalGameState state = GlobalGameState::INITIAL;
     Color boardBackground = BEIGE;
-    std::pair<int, int> score = {0, 0};
 
 public:
     GlobalGame(Vector2 sl, GlobalGameState s);
@@ -64,6 +63,11 @@ public:
     bool isPlayerAI(PieceType color) const;
     bool isCurrentPlayerAI() const;
     void setPlayerType(PieceType color, PlayerType type);
+    int getScore(PieceType color) const;
+    void addScore(PieceType color);
+    void removeScore(PieceType color);
+    std::string getName(PieceType color) const;
+    void setName(PieceType color, const std::string& name);
     bool isFiveAt(int row, int col, PieceType type) const;
     Move undoMove();
     Move redoMove();

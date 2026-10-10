@@ -25,10 +25,12 @@ public:
 
 class ScoreBoard : public Object {
 private:
-    const GlobalGame * globalGame;
+    const LocalGame * localGame;
+
+    void drawPlayer(PieceType color, float y) const;
 
 public:
-    ScoreBoard(Vector2 p, const GlobalGame * gg);
+    ScoreBoard(Vector2 p, const LocalGame * lg);
     void draw() override;
 };
 

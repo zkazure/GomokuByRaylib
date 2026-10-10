@@ -15,7 +15,7 @@ Game::Game(Vector2 screenLayout)
       saveGameButton({700, 415}, "SAVE GAME", 14),
       loadGameButton({700, 460}, "LOAD GAME", 14),
       nextRoundButton({700, 505}, "NEW ROUND", 14),
-      scoreBoard({650, 150}, &globalGame),
+      scoreBoard({650, 150}, &localGame),
       winLossDeclare({650, 215}, &localGame) {}
 
 bool Game::shouldClose() const {
@@ -138,9 +138,9 @@ void Game::handleTurn() {
     if (!localGame.isPlaying()) {
         globalGame.state = GlobalGameState::GAMEOVER;
         if (localGame.getState() == LocalGameState::BLACK_WIN) {
-            globalGame.score.first += 1;
+            localGame.addScore(PieceType::PIECE_BLACK);
         } else if (localGame.getState() == LocalGameState::WHITE_WIN) {
-            globalGame.score.second += 1;
+            localGame.addScore(PieceType::PIECE_WHITE);
         }
     }
 
