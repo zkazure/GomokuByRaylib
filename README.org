@@ -228,8 +228,8 @@ Everything which is visible in game is an ~object~.
   + 人类点击落子（轮到 AI 时忽略鼠标）
   + AI 回合：累计 ~aiWaitTimer~，满 ~AI_THINK_DELAY~（0.35s）才落子；不在 AI 回合时清零
 - playAIMove：问 ~AI::chooseMove~ 要一步，走 ~board.createPiece~ 落子；万一非法就线性找一个空点兜底。
-- render：BeginDrawing、画棋盘与右侧面板、EndDrawing。轮到 AI 且本局未结束时，在标题下方画
-  ~AI THINKING...~。
+- render：BeginDrawing、画棋盘与右侧面板、EndDrawing。不画"轮到谁"的提示——行棋方由棋盘上
+  最后一手的标记与两侧按钮的文案体现，AI 是不是在思考看它下一手落下来即可。
 
 人机对弈的几条约定：
 

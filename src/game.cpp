@@ -42,10 +42,6 @@ void Game::render() {
 
     DrawText("GOMOKU", 650, 75, 24, UiPalette::ink);
 
-    if (localGame.isCurrentPlayerAI() && localGame.isPlaying()) {
-        DrawText("AI THINKING...", 650, 105, 12, UiPalette::muted);
-    }
-
     blackTypeButton.draw();
     whiteTypeButton.draw();
     saveGameButton.draw();
