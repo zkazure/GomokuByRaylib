@@ -55,17 +55,16 @@ Move LocalGame::getLastMove() const {
     return moveHistory.top();
 }
 
-bool isFiveAt(const std::vector<std::vector<PieceType>>& board,
-              int row, int col, PieceType type) {
+bool LocalGame::isFiveAt(int row, int col, PieceType type) const {
     if (type == PieceType::PIECE_EMPTY) {
         return false;
     }
-
-    const int range = static_cast<int>(board.size());
-    if (row < 0 || row >= range || col < 0 || col >= range) {
+    if (row < 1 || row > boardSize || col < 1 || col > boardSize) {
         return false;
     }
-    if (board[row][col] != type) {
+
+    const PieceType cell = boardState[row][col];
+    if (cell != PieceType::PIECE_EMPTY && cell != type) {
         return false;
     }
 
@@ -75,13 +74,13 @@ bool isFiveAt(const std::vector<std::vector<PieceType>>& board,
         int cnt = 1;
 
         for (int sign : {1, -1}) {
-            for (int step = 1; step < range; ++step) {
+            for (int step = 1; ; ++step) {
                 const int r = row + sign * direction[0] * step;
                 const int c = col + sign * direction[1] * step;
-                if (r < 0 || r >= range || c < 0 || c >= range) {
+                if (r < 1 || r > boardSize || c < 1 || c > boardSize) {
                     break;
                 }
-                if (board[r][c] != type) {
+                if (boardState[r][c] != type) {
                     break;
                 }
                 cnt += 1;
@@ -97,12 +96,12 @@ bool isFiveAt(const std::vector<std::vector<PieceType>>& board,
 }
 
 void LocalGame::checkOutcome() {
-    Move lastMove = getLastMove();
+    const Move lastMove = getLastMove();
     if (lastMove.type == PieceType::PIECE_EMPTY) {
         return;
     }
 
-    if (!isFiveAt(boardState, lastMove.row, lastMove.col, lastMove.type)) {
+    if (!isFiveAt(lastMove.row, lastMove.col, lastMove.type)) {
         return;
     }
 

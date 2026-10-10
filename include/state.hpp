@@ -29,10 +29,6 @@ struct Move {
 };
 
 
-bool isFiveAt(const std::vector<std::vector<PieceType>>& board,
-              int row, int col, PieceType type);
-
-
 class LocalGame {
 public:
     int boardSize = 15;
@@ -63,6 +59,7 @@ public:
     int getBoardSize() const;
     PieceType getPiece(int row, int col) const;
     PieceType getCurrentPlaying() const;
+    bool isFiveAt(int row, int col, PieceType type) const;
     Move undoMove();
     Move redoMove();
 };

@@ -83,7 +83,6 @@ bear --output build/compile_commands.json -- make
 
 - Make1Move: 改变 boardState、moveHistory，然后 nextTurn。
 - getLastMove: 拿到最近一步棋的相关参数，如果没有则返回一个 PieceType::EMPTY 的 Move。
-- checkOutcome: 检查胜负。取最近一手，交给 ~isFiveAt~ 判定。由 ~main~ 每帧调用。
 - clear：清空棋盘，行棋方复位为黑棋；棋手类型保留（换一局不重置玩家选好的对手）。
 - setCurrentPlayer(color)：按持子颜色指定行棋方。
 - nextTurn：把行棋方换成另一方。
@@ -96,6 +95,13 @@ bear --output build/compile_commands.json -- make
 - getBoardSize：棋盘边长。
 - getPiece(row, col)：棋盘上某个交点的棋子。
 - getCurrentPlaying：行棋方的持子，也就是现在该下什么棋子。
+- isFiveAt(row, col, type)：把 ~(row, col)~ 视作已落 ~type~，沿横、竖、两条对角线四个方向取
+  穿过该点的同色连续段，任一方向长度 >= 5 即为真。
+  + 该点为空时即"假设在此落子"，该点已是同色子时即"按现状判定"，因此 ~checkOutcome~ 与 AI
+    试算共用这一个方法，调用者不需要拿到 ~boardState~。
+  + 该点已是对方向棋子、越界、或 ~type~ 为 empty 时返回 false。
+  + 只认连续型：~3,4,5,6,8~ 这种中间断一格的五子不算胜。
+- checkOutcome：取最近一手，交给 ~isFiveAt~ 判定胜负。由 ~main~ 每帧调用。
 
 记账：
 
@@ -117,23 +123,6 @@ bear --output build/compile_commands.json -- make
   rmoveHistory
   #+end_example
 - loadFromFile：读档后按存档里的持子颜色调用 ~setCurrentPlayer()~ 复位行棋方指针。
-
-** isFiveAt
-
-#+begin_src cpp
-bool isFiveAt(const std::vector<std::vector<PieceType>>& board,
-              int row, int col, PieceType type);
-#+end_src
-
-判定 ~board~ 上 ~(row, col)~ 处的 ~type~ 是否已连成五子：沿横、竖、两条对角线四个方向，
-各取穿过该点的同色连续段长度，任一方向长度 >= 5 即为真。
-
-- 纯函数：只读棋盘，不看 ~moveHistory~，也不修改任何状态。AI 试算可以直接复用同一套判定，
-  不必伪造落子历史（这是它从 ~checkOutcome~ 里抽出来的原因）。
-- 只认连续型：~3,4,5,6,8~ 这种中间断一格的五子不算胜，与重构前的语义一致。
-- 棋盘沿用 ~LocalGame::boardState~ 的布局：索引 ~1..boardSize~ 为可落子区，外围一圈恒为 empty。
-  函数本身不依赖哨兵圈，越界索引与 ~PIECE_EMPTY~ 都会直接返回 false。
-- ~checkOutcome()~ 现在是"取最近一手 → 调用 ~isFiveAt~"，原先四个方向各写一遍的扫描已删除。
 
 ** Object
 
