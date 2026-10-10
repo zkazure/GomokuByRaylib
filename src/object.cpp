@@ -74,15 +74,15 @@ void Board::draw() {
 
     DrawRectangleV(leftTop, {width, width}, background);
     DrawRectangleLines((int)leftTop.x, (int)leftTop.y, (int)width, (int)width,
-                       UiPalette::ink);
+                       UiPalette::foreground);
 
     for (int i = 1; i <= boardSize; ++i) {
         DrawLineV(Vector2Add(intersections[1][i], {0, -cellWidth}),
                   Vector2Add(intersections[boardSize][i], {0, cellWidth}),
-                  UiPalette::ink);
+                  UiPalette::foreground);
         DrawLineV(Vector2Add(intersections[i][1], {-cellWidth, 0}),
                   Vector2Add(intersections[i][boardSize], {cellWidth, 0}),
-                  UiPalette::ink);
+                  UiPalette::foreground);
     }
 
     for (int i = 1; i <= boardSize; ++i) {
@@ -274,9 +274,9 @@ void Board::syncPiecesFromLocalGame() {
 Piece::Piece(const Board *b, Vector2 p, PieceType t) : Object(p), board(b), type(t) {}
 void Piece::draw() {
     if (type == PieceType::PIECE_BLACK) {
-        DrawCircleV(position, radius, UiPalette::ink);
+        DrawCircleV(position, radius, UiPalette::foreground);
     } else {
-        DrawCircleV(position, radius, UiPalette::panel);
+        DrawCircleV(position, radius, UiPalette::surface);
     }
 }
 

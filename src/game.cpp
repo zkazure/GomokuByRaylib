@@ -37,11 +37,11 @@ void Game::update() {
 
 void Game::render() {
     BeginDrawing();
-    ClearBackground(UiPalette::window);
+    ClearBackground(UiPalette::background);
 
     board.draw();
 
-    DrawText("GOMOKU", 650, 75, 24, UiPalette::ink);
+    DrawText("GOMOKU", 650, 75, 24, UiPalette::foreground);
 
     blackTypeButton.draw();
     whiteTypeButton.draw();

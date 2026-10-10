@@ -10,12 +10,12 @@ Button::Button(Vector2 p, std::string i, int f)
 
 void Button::draw() {
     Rectangle bounds = {leftTop.x, leftTop.y, width, height};
-    const Color background = enabled ? UiPalette::panel : UiPalette::disabled;
-    const Color foreground = enabled ? UiPalette::ink : UiPalette::disabledInk;
+    const Color background = enabled ? UiPalette::surface : UiPalette::surfaceDisabled;
+    const Color foreground = enabled ? UiPalette::foreground : UiPalette::foregroundDisabled;
     DrawRectangleRec(bounds, background);
     DrawRectangleLinesEx(bounds, 1, foreground);
     DrawRectangle((int)leftTop.x, (int)leftTop.y, 3, (int)height,
-                  enabled ? UiPalette::accent : UiPalette::disabledInk);
+                  enabled ? UiPalette::accent : UiPalette::foregroundDisabled);
 
     DrawText(info.c_str(), leftTop.x + 14,
              leftTop.y + (height - fontSize)/2, fontSize,
@@ -35,7 +35,7 @@ ScoreBoard::ScoreBoard(Vector2 p, const LocalGame * lg)
     : Object(p), localGame(lg) {}
 
 void ScoreBoard::draw() {
-    DrawText("SCORE", position.x, position.y - 22, 11, UiPalette::muted);
+    DrawText("SCORE", position.x, position.y - 22, 11, UiPalette::foregroundMuted);
 
     drawPlayer(PieceType::PIECE_BLACK, position.y + 7);
     drawPlayer(PieceType::PIECE_WHITE, position.y + 37);
@@ -49,16 +49,16 @@ void ScoreBoard::drawPlayer(PieceType color, float y) const {
     const float stoneY = y + 8;
 
     if (color == PieceType::PIECE_BLACK) {
-        DrawCircleV({position.x + 6, stoneY}, 6, UiPalette::ink);
+        DrawCircleV({position.x + 6, stoneY}, 6, UiPalette::foreground);
     } else {
-        DrawCircleV({position.x + 6, stoneY}, 6, UiPalette::panel);
-        DrawCircleLines((int)(position.x + 6), (int)stoneY, 6, UiPalette::ink);
+        DrawCircleV({position.x + 6, stoneY}, 6, UiPalette::surface);
+        DrawCircleLines((int)(position.x + 6), (int)stoneY, 6, UiPalette::foreground);
     }
 
-    DrawText(label.c_str(), (int)(position.x + 20), (int)y, 12, UiPalette::ink);
+    DrawText(label.c_str(), (int)(position.x + 20), (int)y, 12, UiPalette::foreground);
     DrawText(scoreText.c_str(),
              (int)(position.x + 140 - MeasureText(scoreText.c_str(), 20)),
-             (int)y - 3, 20, UiPalette::ink);
+             (int)y - 3, 20, UiPalette::foreground);
 }
 
 
@@ -75,5 +75,5 @@ void WinLossDeclare::draw() {
     }
 
     DrawText(declaration.c_str(), position.x, position.y, 16,
-             localGame->isPlaying() ? UiPalette::ink : UiPalette::accent);
+             localGame->isPlaying() ? UiPalette::foreground : UiPalette::accent);
 }
