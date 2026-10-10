@@ -132,7 +132,7 @@ bear --output build/compile_commands.json -- make
 - getName(color) / setName(color, name)：按棋手读写名字。
 - isPlayerAI(color)：某一方是否由 AI 操控。
 - isCurrentPlayerAI：行棋方是否由 AI 操控。
-- setPlayerType(color, type)：把某一方交给人或 AI，用于右侧面板的 ~WHITE: HUMAN / WHITE: AI~ 按钮。
+- setPlayerType(color, type)：把某一方交给人或 AI，用于左侧面板的 ~BLACK: SWITCH~ / ~WHITE: SWITCH~ 按钮。
 
 记账：
 
@@ -243,8 +243,8 @@ Everything which is visible in game is an ~object~.
 
 - shouldClose：窗口是否被要求关闭。
 - update：一帧的逻辑，不碰任何绘制。依次做
-  + 刷新按钮启用态与文案（undo / redo 看历史，NEW ROUND 看本局是否结束，NEW GAME 始终可点，
-    ~BLACK: xxx~ / ~WHITE: xxx~ 看各自操控者）
+  + 刷新按钮启用态（undo / redo 看历史，NEW ROUND 看本局是否结束，NEW GAME 始终可点）。
+    两个切换按钮的文案是固定的 ~BLACK: SWITCH~ / ~WHITE: SWITCH~，当前是谁在操控由记分板显示
   + 处理按钮点击；有按钮吃掉这次点击就到此为止
   + 全局状态为 GAMEOVER 时到此为止
   + 判定胜负并计分
@@ -252,11 +252,11 @@ Everything which is visible in game is an ~object~.
   + AI 回合：累计 ~aiWaitTimer~，满 ~AI_THINK_DELAY~（0.35s）才落子；不在 AI 回合时清零
 - playAIMove：问 ~AI::chooseMove~ 要一步，走 ~board.createPiece~ 落子；万一非法就线性找一个空点兜底。
 - render：BeginDrawing、画棋盘与右侧面板、EndDrawing。不画"轮到谁"的提示——行棋方由棋盘上
-  最后一手的标记与两侧按钮的文案体现，AI 是不是在思考看它下一手落下来即可。
+  最后一手的标记与记分板那一行体现，AI 是不是在思考看它下一手落下来即可。
 
 人机对弈的几条约定：
 
-- 黑白双方的操控者各由一个按钮切换（左侧的 ~BLACK: xxx~ / ~WHITE: xxx~，走
+- 黑白双方的操控者各由一个按钮切换（左侧的 ~BLACK: SWITCH~ / ~WHITE: SWITCH~，走
   ~localGame.setPlayerType~），对局中也可切，点击即时生效。
 - 双方都是 AI 时对局自己走下去，直到分出胜负或平局。~AI::chooseMove~ 对空盘返回天元，
   所以黑方是 AI 时也能先行，不需要人类先摆一手。
