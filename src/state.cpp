@@ -70,21 +70,33 @@ bool LocalGame::isFiveAt(int row, int col, PieceType type) const {
 
     const int directions[4][2] = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
 
-    for (const auto &direction : directions) {
+    for (int d = 0; d < 4; ++d) {
+        const int dr = directions[d][0];
+        const int dc = directions[d][1];
         int cnt = 1;
 
-        for (int sign : {1, -1}) {
-            for (int step = 1; ; ++step) {
-                const int r = row + sign * direction[0] * step;
-                const int c = col + sign * direction[1] * step;
-                if (r < 1 || r > boardSize || c < 1 || c > boardSize) {
-                    break;
-                }
-                if (boardState[r][c] != type) {
-                    break;
-                }
-                cnt += 1;
+        for (int step = 1; step <= boardSize; ++step) {
+            const int r = row + dr * step;
+            const int c = col + dc * step;
+            if (r < 1 || r > boardSize || c < 1 || c > boardSize) {
+                break;
             }
+            if (boardState[r][c] != type) {
+                break;
+            }
+            cnt += 1;
+        }
+
+        for (int step = 1; step <= boardSize; ++step) {
+            const int r = row - dr * step;
+            const int c = col - dc * step;
+            if (r < 1 || r > boardSize || c < 1 || c > boardSize) {
+                break;
+            }
+            if (boardState[r][c] != type) {
+                break;
+            }
+            cnt += 1;
         }
 
         if (cnt >= 5) {
