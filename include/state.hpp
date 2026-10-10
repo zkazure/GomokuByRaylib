@@ -29,8 +29,6 @@ struct Move {
 };
 
 
-// 判断 board 上 (row, col) 处的 type 是否已连成五子。
-// 纯函数：只读棋盘，不看 moveHistory，因此 AI 试算可以复用同一套判定。
 bool isFiveAt(const std::vector<std::vector<PieceType>>& board,
               int row, int col, PieceType type);
 
