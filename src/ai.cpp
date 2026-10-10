@@ -3,30 +3,32 @@
 constexpr int ATTACK_WEIGHT = 11;
 constexpr int DEFENSE_WEIGHT = 10;
 
-enum PatternLevel {
-    PATTERN_NONE,
-    PATTERN_ONE,
-    PATTERN_TWO,
-    PATTERN_OPEN_TWO,
-    PATTERN_THREE,
-    PATTERN_OPEN_THREE,
-    PATTERN_FOUR,
-    PATTERN_OPEN_FOUR,
-    PATTERN_FIVE
+enum class PatternLevel {
+    NONE,
+    ONE,
+    TWO,
+    OPEN_TWO,
+    THREE,
+    OPEN_THREE,
+    FOUR,
+    OPEN_FOUR,
+    FIVE
 };
 
 static int levelScore(PatternLevel level) {
     switch (level) {
-        case PATTERN_FIVE: return 1000000;
-        case PATTERN_OPEN_FOUR: return 100000;
-        case PATTERN_FOUR: return 10000;
-        case PATTERN_OPEN_THREE: return 8000;
-        case PATTERN_THREE: return 800;
-        case PATTERN_OPEN_TWO: return 400;
-        case PATTERN_TWO: return 40;
-        case PATTERN_ONE: return 4;
-        default: return 0;
+        case PatternLevel::FIVE: return 1000000;
+        case PatternLevel::OPEN_FOUR: return 100000;
+        case PatternLevel::FOUR: return 10000;
+        case PatternLevel::OPEN_THREE: return 8000;
+        case PatternLevel::THREE: return 800;
+        case PatternLevel::OPEN_TWO: return 400;
+        case PatternLevel::TWO: return 40;
+        case PatternLevel::ONE: return 4;
+        case PatternLevel::NONE: return 0;
     }
+
+    return 0;
 }
 
 static bool isOnBoard(const LocalGame& game, int row, int col) {
@@ -69,7 +71,7 @@ static PatternLevel levelAt(const LocalGame& game, int row, int col, int dr, int
                             PieceType type) {
     const PieceType cell = game.getPiece(row, col);
     if (cell != PieceType::PIECE_EMPTY && cell != type) {
-        return PATTERN_NONE;
+        return PatternLevel::NONE;
     }
 
     const int forward = runLength(game, row, col, dr, dc, type);
@@ -85,37 +87,37 @@ static PatternLevel levelAt(const LocalGame& game, int row, int col, int dr, int
     }
 
     if (len >= 5) {
-        return PATTERN_FIVE;
+        return PatternLevel::FIVE;
     }
     if (len == 4) {
         if (openEnds == 2) {
-            return PATTERN_OPEN_FOUR;
+            return PatternLevel::OPEN_FOUR;
         }
         if (openEnds == 1) {
-            return PATTERN_FOUR;
+            return PatternLevel::FOUR;
         }
-        return PATTERN_NONE;
+        return PatternLevel::NONE;
     }
     if (len == 3) {
         if (openEnds == 2) {
-            return PATTERN_OPEN_THREE;
+            return PatternLevel::OPEN_THREE;
         }
         if (openEnds == 1) {
-            return PATTERN_THREE;
+            return PatternLevel::THREE;
         }
-        return PATTERN_NONE;
+        return PatternLevel::NONE;
     }
     if (len == 2) {
         if (openEnds == 2) {
-            return PATTERN_OPEN_TWO;
+            return PatternLevel::OPEN_TWO;
         }
         if (openEnds == 1) {
-            return PATTERN_TWO;
+            return PatternLevel::TWO;
         }
-        return PATTERN_NONE;
+        return PatternLevel::NONE;
     }
 
-    return PATTERN_ONE;
+    return PatternLevel::ONE;
 }
 
 static int pointScore(const LocalGame& game, int row, int col, PieceType type) {
