@@ -32,6 +32,9 @@ bear --output build/compile_commands.json -- make
   + empty
   + black
   + white
+- PlayerType：谁在操控某一方棋手。后续联网对战可在此扩展 remote。
+  + human
+  + ai
 - Coordinate = pair<int, int>
 
 ** GlobalGame
@@ -45,11 +48,13 @@ bear --output build/compile_commands.json -- make
 
 ** Player
 
-玩家，用来区分黑白棋手，同时在网络对战中也可以区分不同的棋手。
+一方棋手。既区分黑白棋手（持子），也区分这一方由谁操控，因此在网络对战中同样能说明对面是谁。
 
-- id
-- name
-- playing: 持有的棋子类型
+- playing: 持子，这一方在棋盘上下什么棋子（black / white）。
+- type: 操控者类型（human / ai）。规划中、尚未实现：id、name。
+
+- isAI: 是否由 AI 操控，等价于 ~type == PlayerType::AI~。
+- 构造函数为 ~explicit~，避免 ~PieceType~ 被隐式转换成 ~Player~ 后悄悄丢掉操控者类型。
 
 ** LocalGame
 
@@ -58,29 +63,38 @@ bear --output build/compile_commands.json -- make
 - boardSize (default 15): standard board is 15 x 15.
   which determines how many rows and columns.
 - state: playing, black_win, white_win.
-- player：当前下棋的玩家
+- blackPlayer / whitePlayer：两个棋手，各自带持子与操控者类型。
+- currentPlayer：行棋方，指向 blackPlayer 或 whitePlayer 之一。
 - boardState：棋盘上棋子的分布 (row, col).
 - moveHistory: 上一步棋的历史
 - rmoveHistory: 悔棋的历史
 
+不变式：行棋方是**棋手本身**而不是颜色，当前该下什么棋子一律读 ~currentPlayer->playing~，
+不另存一份颜色状态，所以不会与棋手自身漂移。~setCurrentPlayer()~ 与 ~nextTurn()~ 是唯一改写
+~currentPlayer~ 的两个入口，其余代码只读。
 
-- Make1Move: 改变 boardState、moveHistory.
+注意：~currentPlayer~ 是指向 ~LocalGame~ 自身成员的裸指针，拷贝 ~LocalGame~ 后副本的指针仍指向
+原对象的棋手。当前代码不存在拷贝点（~Board~ 只持有 ~LocalGame*~，AI 也只需要复制棋盘状态）；
+若将来要做整局试算或联网同步，需先自定义拷贝，或改为存索引。
+
+- Make1Move: 改变 boardState、moveHistory，然后 nextTurn。
 - getLastMove: 拿到最近一步棋的相关参数，如果没有则返回一个 PieceType::EMPTY 的 Move。
 - checkOutcome: 检查胜负。
-- clear：清空棋盘
-- nextTurn：下一位玩家
+- clear：清空棋盘，行棋方复位为黑棋；棋手类型保留（换一局不重置玩家选好的对手）。
+- setCurrentPlayer(color)：按持子颜色指定行棋方。
+- nextTurn：把行棋方换成另一方。
 - saveToFile:
   #+begin_example
   boardSize
   state
-  player
+  currentPlayer->playing（行棋方的持子颜色）
   boardState
   moveHistory.size()
   moveHistory
   rmoveHistory.size()
   rmoveHistory
   #+end_example
-- loadFromFile
+- loadFromFile：读档后按存档里的持子颜色调用 ~setCurrentPlayer()~ 复位行棋方指针。
 
 ** Object
 
@@ -103,9 +117,9 @@ Everything which is visible in game is an ~object~.
 
 - pos2coor: convert position on screen to coordinate on the board.
 - coor2pos
-- createPiece: 同时调用 localGame->make1Move
-- undo：悔棋
-- redo: 取消悔棋
+- createPiece: 同时调用 localGame->make1Move。
+- undo：悔棋。行棋方回到被撤那一手所属的棋手。
+- redo: 取消悔棋。行棋方随重做的那一手继续往下走。
 - clear：清空棋盘
 
 

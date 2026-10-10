@@ -208,7 +208,7 @@ void Board::undo() {
 
     localGame->boardState[lastMove.row][lastMove.col] = PieceType::PIECE_EMPTY;
 
-    localGame->player = type;
+    localGame->setCurrentPlayer(type);
 
     if (globalGame->state == GlobalGameState::GAMEOVER) {
         const LocalGameState outcome = localGame->state;
@@ -237,7 +237,7 @@ void Board::redo() {
     localGame->moveHistory.push(move);
     pieces[move.row][move.col] = new Piece(this, coor2pos({move.row, move.col}),
                                            move.type);
-    localGame->player.playing = move.type;
+    localGame->setCurrentPlayer(move.type);
     localGame->nextTurn();
 
     localGame->state = LocalGameState::PLAYING;

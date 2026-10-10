@@ -4,6 +4,9 @@
 
 struct Player {
     PieceType playing = PieceType::PIECE_EMPTY;
+    PlayerType type = PlayerType::HUMAN;
 
-    Player(PieceType t);
+    explicit Player(PieceType t, PlayerType k = PlayerType::HUMAN);
+
+    bool isAI() const;
 };

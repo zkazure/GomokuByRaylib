@@ -201,15 +201,15 @@ void LocalGame::clear() {
         rmoveHistory.pop();
     }
 
-    player.playing = PieceType::PIECE_BLACK;
+    setCurrentPlayer(PieceType::PIECE_BLACK);
+}
+
+void LocalGame::setCurrentPlayer(PieceType color) {
+    currentPlayer = (color == PieceType::PIECE_WHITE) ? &whitePlayer : &blackPlayer;
 }
 
 void LocalGame::nextTurn() {
-    if (player.playing == PieceType::PIECE_BLACK) {
-        player.playing = PieceType::PIECE_WHITE;
-    } else {
-        player.playing = PieceType::PIECE_BLACK;
-    }
+    currentPlayer = (currentPlayer == &blackPlayer) ? &whitePlayer : &blackPlayer;
 }
 
 bool LocalGame::saveToFile(const std::string& path) const {
@@ -220,7 +220,7 @@ bool LocalGame::saveToFile(const std::string& path) const {
 
     file << boardSize << '\n'
          << static_cast<int>(state) << '\n'
-         << static_cast<int>(player.playing) << '\n';
+         << static_cast<int>(currentPlayer->playing) << '\n';
 
     for (int row = 1; row <= boardSize; ++row) {
         for (int col = 1; col <= boardSize; ++col) {
@@ -306,7 +306,7 @@ bool LocalGame::loadFromFile(const std::string& path) {
 
     boardSize = loadedBoardSize;
     state = static_cast<LocalGameState>(loadedState);
-    player.playing = static_cast<PieceType>(loadedPlayer);
+    setCurrentPlayer(static_cast<PieceType>(loadedPlayer));
     boardState = std::move(loadedBoard);
     moveHistory = std::move(loadedHistory);
     rmoveHistory = std::move(loadedRedoHistory);

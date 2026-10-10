@@ -8,6 +8,8 @@ enum class LocalGameState { PLAYING, BLACK_WIN, WHITE_WIN };
 
 enum class PieceType {PIECE_EMPTY, PIECE_BLACK, PIECE_WHITE};
 
+enum class PlayerType { HUMAN, AI };
+
 typedef std::pair<int, int> Coordinate;
 
 namespace UiPalette {

@@ -4,7 +4,6 @@
 #include "state.hpp"
 #include "object.hpp"
 #include "type.hpp"
-#include "player.hpp"
 
 int main() {
     GlobalGame globalGame({800, 600}, GlobalGameState::INITIAL);
@@ -14,8 +13,6 @@ int main() {
     LocalGame localGame;
     Board board(&globalGame, &localGame,
                 {globalGame.screenLayout.x/2, globalGame.screenLayout.y/2});
-
-    Player *currPlayer = &localGame.player;
 
     Button undoButton({700, 325}, "UNDO", 14);
     Button redoButton({700, 370}, "REDO", 14);
@@ -105,7 +102,7 @@ int main() {
         }
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            board.createPiece(GetMousePosition(), currPlayer->playing);
+            board.createPiece(GetMousePosition(), localGame.currentPlayer->playing);
         }
 
     }

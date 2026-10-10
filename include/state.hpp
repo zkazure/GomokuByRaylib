@@ -33,7 +33,9 @@ class LocalGame {
 public:
     int boardSize = 15;
     LocalGameState state = LocalGameState::PLAYING;
-    Player player = Player(PieceType::PIECE_BLACK);
+    Player blackPlayer = Player(PieceType::PIECE_BLACK, PlayerType::HUMAN);
+    Player whitePlayer = Player(PieceType::PIECE_WHITE, PlayerType::HUMAN);
+    Player *currentPlayer = &blackPlayer;
     std::vector<std::vector<PieceType>> boardState;
     std::stack<Move> moveHistory;
     std::stack<Move> rmoveHistory;
@@ -45,6 +47,7 @@ public:
     Move getLastMove() const;
     void checkOutcome();
     void clear();
+    void setCurrentPlayer(PieceType color);
     void nextTurn();
     bool saveToFile(const std::string& path) const;
     bool loadFromFile(const std::string& path);
