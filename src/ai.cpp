@@ -1,8 +1,5 @@
 #include "ai.hpp"
 
-constexpr int ATTACK_WEIGHT = 11;
-constexpr int DEFENSE_WEIGHT = 10;
-
 enum class PatternLevel {
     NONE,
     ONE,
@@ -132,6 +129,12 @@ static int pointScore(const LocalGame& game, int row, int col, PieceType type) {
     return total;
 }
 
+static int scoreAt(const LocalGame& game, Coordinate move,
+                   PieceType me, PieceType opponent) {
+    return pointScore(game, move.first, move.second, me)
+        + pointScore(game, move.first, move.second, opponent);
+}
+
 static PieceType opponentOf(PieceType type) {
     if (type == PieceType::PIECE_BLACK) {
         return PieceType::PIECE_WHITE;
@@ -157,31 +160,6 @@ static bool hasNeighbor(const LocalGame& game, int row, int col) {
     }
 
     return false;
-}
-
-static int centerDistance(const LocalGame& game, Coordinate move) {
-    const int center = (game.getBoardSize() + 1) / 2;
-    const int dr = move.first - center;
-    const int dc = move.second - center;
-    return ((dr < 0) ? -dr : dr) + ((dc < 0) ? -dc : dc);
-}
-
-static bool isBetterMove(const LocalGame& game, int score, Coordinate move,
-                         int bestScore, Coordinate best) {
-    if (score != bestScore) {
-        return score > bestScore;
-    }
-
-    const int moveDistance = centerDistance(game, move);
-    const int bestDistance = centerDistance(game, best);
-    if (moveDistance != bestDistance) {
-        return moveDistance < bestDistance;
-    }
-    if (move.first != best.first) {
-        return move.first < best.first;
-    }
-
-    return move.second < best.second;
 }
 
 std::vector<Coordinate> AI::candidateMoves(const LocalGame& game) {
@@ -235,35 +213,19 @@ Coordinate AI::chooseMove(const LocalGame& game) {
         }
     }
 
-    Coordinate block = Coordinate(0, 0);
-    int blockAttack = 0;
-    bool hasBlock = false;
-
     for (int i = 0; i < count; ++i) {
-        if (!game.isFiveAt(candidates[i].first, candidates[i].second, opponent)) {
-            continue;
+        if (game.isFiveAt(candidates[i].first, candidates[i].second, opponent)) {
+            return candidates[i];
         }
-        const int attack = pointScore(game, candidates[i].first, candidates[i].second, me);
-        if (!hasBlock || isBetterMove(game, attack, candidates[i], blockAttack, block)) {
-            block = candidates[i];
-            blockAttack = attack;
-            hasBlock = true;
-        }
-    }
-
-    if (hasBlock) {
-        return block;
     }
 
     Coordinate best = candidates[0];
-    int bestScore = ATTACK_WEIGHT * pointScore(game, best.first, best.second, me)
-        + DEFENSE_WEIGHT * pointScore(game, best.first, best.second, opponent);
+    int bestScore = scoreAt(game, best, me, opponent);
 
     for (int i = 1; i < count; ++i) {
         const Coordinate move = candidates[i];
-        const int score = ATTACK_WEIGHT * pointScore(game, move.first, move.second, me)
-            + DEFENSE_WEIGHT * pointScore(game, move.first, move.second, opponent);
-        if (isBetterMove(game, score, move, bestScore, best)) {
+        const int score = scoreAt(game, move, me, opponent);
+        if (score > bestScore) {
             best = move;
             bestScore = score;
         }
